@@ -1,0 +1,3398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>🎵 Suno Composer Studio · v3.0</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/inter@latest/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/jetbrains-mono@latest/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/cormorant-garamond@latest/index.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/fontsource/css/lora@latest/index.css">
+    <style>
+        :root {
+            --bg-deep: #06080f;
+            --bg-app: #0d1220;
+            --bg-panel: #121829;
+            --bg-input: #0a0f1c;
+            --bg-hover: #1a2340;
+            --bg-elevated: #1a2238;
+            --border: #243049;
+            --border-light: #2d3d5e;
+            --accent: #6b82ff;
+            --accent-hover: #7d92ff;
+            --accent-glow: rgba(107, 130, 255, 0.25);
+            --accent-soft: rgba(107, 130, 255, 0.08);
+            --gold: #d4a857;
+            --gold-soft: rgba(212, 168, 87, 0.15);
+            --success: #22c55e;
+            --success-bg: #14532d;
+            --danger: #ef4444;
+            --danger-bg: #7f1d1d;
+            --warning: #f59e0b;
+            --warning-bg: #78350f;
+            --info: #3b82f6;
+            --purple: #a78bfa;
+            --pink: #f472b6;
+            --text-primary: #e8edff;
+            --text-secondary: #9aabda;
+            --text-muted: #5a6b8f;
+            --text-dim: #3d4d6f;
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 20px;
+            --radius-full: 9999px;
+            --shadow: 0 20px 50px -10px rgba(0,0,0,0.7);
+            --shadow-lg: 0 30px 70px -15px rgba(0,0,0,0.8);
+            --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-display: 'Cormorant Garamond', Georgia, serif;
+            --font-body: 'Lora', Georgia, serif;
+            --font-ui: 'Inter', system-ui, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        [data-theme="light"] {
+            --bg-deep: #f5f3ee;
+            --bg-app: #faf8f3;
+            --bg-panel: #ffffff;
+            --bg-input: #f0ede6;
+            --bg-hover: #e8e4db;
+            --bg-elevated: #ffffff;
+            --border: #d4cfc2;
+            --border-light: #bfb9a8;
+            --accent: #4a5fd6;
+            --accent-hover: #3a4fc6;
+            --accent-glow: rgba(74, 95, 214, 0.2);
+            --accent-soft: rgba(74, 95, 214, 0.06);
+            --gold: #a67c2e;
+            --gold-soft: rgba(166, 124, 46, 0.1);
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --text-muted: #7a7a9a;
+            --text-dim: #a0a0b8;
+            --shadow: 0 20px 50px -10px rgba(0,0,0,0.1);
+            --shadow-lg: 0 30px 70px -15px rgba(0,0,0,0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-deep);
+            font-family: var(--font-ui);
+            color: var(--text-primary);
+            min-height: 100vh;
+            padding: 0.75rem;
+            line-height: 1.5;
+            transition: background var(--transition), color var(--transition);
+        }
+
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--border-light); }
+
+        .app {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: var(--bg-app);
+            border-radius: var(--radius-xl);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            padding: 1.2rem 1.8rem;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 1rem;
+            background: linear-gradient(180deg, var(--bg-panel) 0%, var(--bg-app) 100%);
+        }
+        .header-left { display: flex; align-items: center; gap: 1rem; }
+        .logo {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .logo-icon {
+            width: 36px;
+            height: 36px;
+            background: linear-gradient(135deg, var(--accent), var(--gold));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+        .header-subtitle {
+            font-family: var(--font-body);
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+        .header-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; align-items: center; }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            width: 40px;
+            height: 24px;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            cursor: pointer;
+            position: relative;
+            transition: all var(--transition);
+        }
+        .theme-toggle::after {
+            content: '🌙';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 18px;
+            height: 18px;
+            background: var(--accent);
+            border-radius: 50%;
+            transition: all var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.6rem;
+        }
+        [data-theme="light"] .theme-toggle::after {
+            content: '☀️';
+            left: 18px;
+            background: var(--gold);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.45rem 0.9rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 500;
+            font-family: var(--font-ui);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: all var(--transition);
+            white-space: nowrap;
+            text-decoration: none;
+        }
+        .btn:active { transform: scale(0.97); }
+        .btn-primary { background: var(--accent); color: white; border-color: var(--accent-hover); box-shadow: 0 4px 12px var(--accent-glow); }
+        .btn-primary:hover { background: var(--accent-hover); }
+        .btn-success { background: var(--success-bg); color: #86efac; border-color: #22c55e44; }
+        .btn-success:hover { background: #166534; }
+        .btn-danger { background: var(--danger-bg); color: #fca5a5; border-color: #ef444444; }
+        .btn-danger:hover { background: #991b1b; }
+        .btn-warning { background: var(--warning-bg); color: #fcd34d; border-color: #f59e0b44; }
+        .btn-warning:hover { background: #92400e; }
+        .btn-gold { background: var(--gold-soft); color: var(--gold); border-color: rgba(212,168,87,0.3); }
+        .btn-gold:hover { background: rgba(212,168,87,0.25); }
+        .btn-outline { background: transparent; color: var(--text-secondary); border-color: var(--border); }
+        .btn-outline:hover { background: var(--bg-hover); border-color: var(--border-light); color: var(--text-primary); }
+        .btn-ghost { background: transparent; color: var(--text-muted); border: none; padding: 0.3rem 0.6rem; }
+        .btn-ghost:hover { color: var(--text-primary); background: var(--bg-hover); }
+        .btn-sm { padding: 0.3rem 0.7rem; font-size: 0.7rem; }
+        .btn-xs { padding: 0.2rem 0.5rem; font-size: 0.65rem; }
+
+        /* ===== TABS ===== */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+            padding: 0 1.8rem;
+            gap: 0;
+            overflow-x: auto;
+            background: var(--bg-panel);
+        }
+        .tab {
+            padding: 0.75rem 1rem;
+            font-size: 0.78rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 2px solid transparent;
+            transition: all var(--transition);
+            white-space: nowrap;
+            background: none;
+            border-top: none;
+            border-left: none;
+            border-right: none;
+            font-family: var(--font-ui);
+        }
+        .tab:hover { color: var(--text-secondary); }
+        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+        /* ===== MAIN ===== */
+        .main-content { padding: 1.2rem 1.8rem 1.5rem; }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; animation: fadeIn 0.3s; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ===== GRID ===== */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+        .grid-full { grid-column: 1 / -1; }
+
+        @media (max-width: 1000px) {
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .header { padding: 1rem 1.2rem; }
+            .main-content { padding: 1rem 1.2rem; }
+            .tabs { padding: 0 1.2rem; }
+        }
+
+        /* ===== PANELS ===== */
+        .panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.1rem;
+            transition: all var(--transition);
+        }
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            gap: 0.5rem;
+        }
+        .panel-title {
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-primary);
+        }
+        .panel-badge {
+            font-size: 0.62rem;
+            background: var(--bg-input);
+            color: var(--text-muted);
+            padding: 0.15rem 0.55rem;
+            border-radius: var(--radius-full);
+            border: 1px solid var(--border);
+            font-family: var(--font-ui);
+        }
+
+        /* ===== FORM ===== */
+        .form-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            align-items: flex-end;
+            background: var(--bg-input);
+            padding: 0.8rem;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            margin-bottom: 0.8rem;
+        }
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.15rem;
+            flex: 1 1 120px;
+            min-width: 0;
+        }
+        .form-group label {
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            background: var(--bg-deep);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-sm);
+            padding: 0.45rem 0.7rem;
+            color: var(--text-primary);
+            font-size: 0.8rem;
+            font-family: var(--font-ui);
+            outline: none;
+            transition: all var(--transition);
+            width: 100%;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-glow);
+        }
+        .form-group input::placeholder,
+        .form-group textarea::placeholder { color: var(--text-dim); }
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%235a6b8f' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10l-5 5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.6rem center;
+            padding-right: 1.8rem;
+        }
+
+        /* ===== SECTION LIST ===== */
+        .section-list {
+            max-height: 380px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-input);
+        }
+        .section-item {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            padding: 0.5rem 0.7rem;
+            border-bottom: 1px solid rgba(36,48,73,0.5);
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+        }
+        .section-item:last-child { border-bottom: none; }
+        .section-item:hover { background: var(--bg-hover); }
+        .section-item.active {
+            background: var(--accent-soft);
+            border-left: 3px solid var(--accent);
+        }
+        .section-item.dragging { opacity: 0.4; }
+        .drag-handle {
+            cursor: grab;
+            color: var(--text-dim);
+            font-size: 0.85rem;
+            padding: 0 0.15rem;
+            user-select: none;
+        }
+        .drag-handle:active { cursor: grabbing; }
+        .section-tag {
+            font-weight: 600;
+            font-size: 0.68rem;
+            color: var(--accent);
+            background: var(--accent-soft);
+            padding: 0.12rem 0.5rem;
+            border-radius: var(--radius-full);
+            min-width: 65px;
+            text-align: center;
+            border: 1px solid rgba(107,130,255,0.15);
+        }
+        .section-mood-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .section-meta {
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            flex: 1;
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .section-actions {
+            display: flex;
+            gap: 0.1rem;
+            opacity: 0;
+            transition: opacity var(--transition);
+        }
+        .section-item:hover .section-actions { opacity: 1; }
+        .section-actions button {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 0.15rem 0.3rem;
+            border-radius: var(--radius-sm);
+            font-size: 0.7rem;
+            transition: all var(--transition);
+        }
+        .section-actions button:hover { background: var(--bg-hover); color: var(--text-primary); }
+        .section-actions button.delete-btn:hover { color: var(--danger); }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem 1rem;
+            color: var(--text-dim);
+            font-style: italic;
+            font-size: 0.82rem;
+            font-family: var(--font-body);
+        }
+
+        /* ===== EDITOR ===== */
+        .section-editor {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .section-editor-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.8rem;
+            background: var(--bg-input);
+            border-bottom: 1px solid var(--border);
+        }
+        .section-editor-header .tag-label {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--accent);
+        }
+        .section-editor textarea {
+            width: 100%;
+            min-height: 140px;
+            background: var(--bg-deep);
+            border: none;
+            padding: 0.7rem 0.9rem;
+            color: var(--text-primary);
+            font-family: var(--font-body);
+            font-size: 0.88rem;
+            line-height: 1.8;
+            resize: vertical;
+            outline: none;
+        }
+        .section-editor textarea::placeholder { color: var(--text-dim); font-style: italic; }
+        .section-editor-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.35rem 0.8rem;
+            background: var(--bg-input);
+            border-top: 1px solid var(--border);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 0.3rem;
+        }
+        .syllable-count {
+            background: var(--gold-soft);
+            color: var(--gold);
+            padding: 0.1rem 0.4rem;
+            border-radius: var(--radius-full);
+            font-size: 0.62rem;
+            font-weight: 600;
+        }
+
+        /* ===== CHIPS ===== */
+        .chips { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.4rem; }
+        .chip {
+            font-size: 0.65rem;
+            padding: 0.18rem 0.5rem;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+        .chip:hover { transform: scale(1.05); }
+        .chip-cue { background: rgba(167,139,250,0.1); border-color: rgba(167,139,250,0.2); color: #c4b5fd; }
+        .chip-cue:hover { background: rgba(167,139,250,0.2); }
+        .chip-meta { background: var(--accent-soft); border-color: rgba(107,130,255,0.15); color: var(--accent); }
+        .chip-meta:hover { background: rgba(107,130,255,0.15); }
+        .chip-mood {
+            padding: 0.2rem 0.6rem;
+            font-size: 0.65rem;
+            border-radius: var(--radius-full);
+            cursor: pointer;
+            transition: all var(--transition);
+            border: 1px solid transparent;
+        }
+
+        /* ===== PREVIEW ===== */
+        .preview-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 0.9rem;
+            background: var(--bg-panel);
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+        .preview-content {
+            padding: 0.9rem;
+            font-family: var(--font-body);
+            font-size: 0.85rem;
+            line-height: 1.9;
+            white-space: pre-wrap;
+            word-break: break-word;
+            max-height: 400px;
+            overflow-y: auto;
+            color: var(--text-primary);
+            min-height: 100px;
+        }
+        .preview-content .tag-line { color: var(--accent); font-weight: 700; font-family: var(--font-display); font-size: 0.95rem; }
+        .preview-content .meta-line { color: var(--gold); }
+        .preview-content .cue-line { color: var(--purple); font-style: italic; }
+        .preview-content .repeat-word { background: rgba(239,68,68,0.15); border-radius: 3px; padding: 0 2px; }
+
+        /* ===== TIMELINE ===== */
+        .timeline {
+            display: flex;
+            gap: 2px;
+            padding: 0.8rem;
+            background: var(--bg-input);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border);
+            overflow-x: auto;
+            min-height: 60px;
+            align-items: stretch;
+        }
+        .timeline-block {
+            flex: 1;
+            min-width: 50px;
+            border-radius: var(--radius-sm);
+            padding: 0.4rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition);
+            position: relative;
+            font-size: 0.62rem;
+            font-weight: 600;
+            text-align: center;
+            border: 1px solid transparent;
+        }
+        .timeline-block:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+        .timeline-block.active { border-color: white; transform: translateY(-2px); }
+        .timeline-block .block-label { font-size: 0.6rem; opacity: 0.9; }
+
+        /* ===== MOOD PALETTE ===== */
+        .mood-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 0.4rem;
+        }
+        .mood-option {
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.65rem;
+            font-weight: 600;
+            transition: all var(--transition);
+            border: 2px solid transparent;
+        }
+        .mood-option:hover { transform: scale(1.05); }
+        .mood-option.selected { border-color: white; box-shadow: 0 0 12px rgba(255,255,255,0.2); }
+
+        /* ===== RHYME SUGGESTIONS ===== */
+        .rhyme-panel {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.7rem;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+        .rhyme-word {
+            display: inline-block;
+            padding: 0.15rem 0.5rem;
+            margin: 0.15rem;
+            background: var(--accent-soft);
+            border: 1px solid rgba(107,130,255,0.15);
+            border-radius: var(--radius-full);
+            font-size: 0.68rem;
+            color: var(--accent);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .rhyme-word:hover { background: rgba(107,130,255,0.2); transform: scale(1.05); }
+
+        /* ===== BRAINSTORM ===== */
+        .brainstorm-area {
+            min-height: 120px;
+            background: var(--bg-input);
+            border: 1px dashed var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.7rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            align-content: flex-start;
+        }
+        .idea-card {
+            background: var(--gold-soft);
+            border: 1px solid rgba(212,168,87,0.2);
+            border-radius: var(--radius-sm);
+            padding: 0.3rem 0.6rem;
+            font-size: 0.72rem;
+            color: var(--gold);
+            cursor: grab;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: all var(--transition);
+        }
+        .idea-card:hover { transform: scale(1.03); }
+        .idea-card:active { cursor: grabbing; }
+        .idea-card .remove-idea {
+            cursor: pointer;
+            opacity: 0.5;
+            font-size: 0.7rem;
+        }
+        .idea-card .remove-idea:hover { opacity: 1; color: var(--danger); }
+
+        /* ===== METRICS ===== */
+        .metric-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.8rem;
+            text-align: center;
+        }
+        .metric-value {
+            font-family: var(--font-display);
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+        .metric-label {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 0.2rem;
+        }
+
+        /* Progress */
+        .progress-bar {
+            height: 4px;
+            background: var(--border);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 0.4rem;
+        }
+        .progress-fill {
+            height: 100%;
+            border-radius: 2px;
+            transition: width 0.3s, background 0.3s;
+        }
+        .progress-fill.safe { background: var(--success); }
+        .progress-fill.warning { background: var(--warning); }
+        .progress-fill.danger { background: var(--danger); }
+
+        /* ===== WORD CLOUD ===== */
+        .word-cloud {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.3rem;
+            padding: 0.7rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            min-height: 80px;
+            align-items: center;
+            justify-content: center;
+        }
+        .cloud-word {
+            padding: 0.15rem 0.5rem;
+            border-radius: var(--radius-full);
+            background: var(--accent-soft);
+            color: var(--accent);
+            cursor: default;
+            transition: all var(--transition);
+        }
+        .cloud-word:hover { transform: scale(1.1); }
+
+        /* ===== TEMPLATES ===== */
+        .templates-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 0.8rem;
+        }
+        .template-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .template-card:hover {
+            border-color: var(--accent);
+            background: var(--bg-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+        .template-card .template-name {
+            font-family: var(--font-display);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.2rem;
+        }
+        .template-card .template-desc {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-family: var(--font-body);
+            font-style: italic;
+        }
+        .template-card .template-tags { display: flex; flex-wrap: wrap; gap: 0.2rem; }
+        .template-card .template-tags span {
+            font-size: 0.58rem;
+            background: var(--accent-soft);
+            color: var(--text-secondary);
+            padding: 0.1rem 0.4rem;
+            border-radius: var(--radius-full);
+        }
+
+        /* ===== PROJECTS ===== */
+        .projects-list { display: flex; flex-direction: column; gap: 0.4rem; }
+        .project-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.7rem 0.9rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            transition: all var(--transition);
+        }
+        .project-item:hover { border-color: var(--border-light); }
+        .project-info { flex: 1; min-width: 0; }
+        .project-name { font-weight: 600; font-size: 0.82rem; margin-bottom: 0.1rem; }
+        .project-meta { font-size: 0.68rem; color: var(--text-muted); }
+        .project-actions { display: flex; gap: 0.2rem; }
+
+        /* ===== TOAST ===== */
+        .toast-container {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+        }
+        .toast {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.7rem 1rem;
+            font-size: 0.78rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            animation: slideIn 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            max-width: 320px;
+        }
+        .toast.success { border-left: 3px solid var(--success); }
+        .toast.error { border-left: 3px solid var(--danger); }
+        .toast.info { border-left: 3px solid var(--accent); }
+        .toast.warning { border-left: 3px solid var(--warning); }
+        @keyframes slideIn { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        @keyframes slideOut { from { transform: translateX(0); opacity: 1; } to { transform: translateX(100%); opacity: 0; } }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem;
+            animation: fadeIn 0.2s;
+        }
+        .modal {
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 1.3rem;
+            max-width: 550px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+        }
+        .modal h3 { font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 0.8rem; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 0.4rem; margin-top: 1rem; }
+
+        /* ===== STATUS BAR ===== */
+        .status-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.5rem 1.8rem;
+            background: var(--bg-input);
+            border-top: 1px solid var(--border);
+            font-size: 0.68rem;
+            color: var(--text-muted);
+            flex-wrap: wrap;
+            gap: 0.4rem;
+        }
+        .status-item { display: flex; align-items: center; gap: 0.25rem; }
+        .status-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--success); }
+
+        /* ===== HELPER ===== */
+        .helper-text {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 0.3rem;
+            line-height: 1.5;
+            font-family: var(--font-body);
+            font-style: italic;
+        }
+        .helper-text code {
+            background: var(--bg-deep);
+            padding: 0.08rem 0.25rem;
+            border-radius: 3px;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            color: var(--accent);
+            font-style: normal;
+        }
+
+        .separator { height: 1px; background: var(--border); margin: 0.8rem 0; }
+
+        /* ===== TITLE GENERATOR ===== */
+        .title-suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+        .title-suggestion {
+            font-family: var(--font-display);
+            font-size: 0.95rem;
+            font-style: italic;
+            padding: 0.3rem 0.8rem;
+            background: var(--gold-soft);
+            border: 1px solid rgba(212,168,87,0.2);
+            border-radius: var(--radius-full);
+            color: var(--gold);
+            cursor: pointer;
+            transition: all var(--transition);
+        }
+        .title-suggestion:hover { transform: scale(1.05); background: rgba(212,168,87,0.25); }
+
+        /* ===== HISTORY ===== */
+        .history-list {
+            max-height: 200px;
+            overflow-y: auto;
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            background: var(--bg-input);
+        }
+        .history-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.4rem 0.7rem;
+            border-bottom: 1px solid rgba(36,48,73,0.5);
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background var(--transition);
+        }
+        .history-item:hover { background: var(--bg-hover); }
+        .history-item:last-child { border-bottom: none; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            body { padding: 0.3rem; }
+            .header { padding: 0.8rem; }
+            .main-content { padding: 0.8rem; }
+            .form-row { flex-direction: column; }
+            .form-group { flex: 1 1 auto; }
+            .templates-grid { grid-template-columns: 1fr; }
+            .status-bar { padding: 0.4rem 0.8rem; }
+            .logo { font-size: 1.4rem; }
+        }
+
+        /* ===== SYNONYM POPUP ===== */
+        .synonym-popup {
+            position: absolute;
+            background: var(--bg-panel);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 0.6rem;
+            box-shadow: var(--shadow);
+            z-index: 100;
+            max-width: 250px;
+            display: none;
+        }
+        .synonym-popup.show { display: block; }
+        .synonym-popup .syn-word {
+            display: inline-block;
+            padding: 0.15rem 0.4rem;
+            margin: 0.1rem;
+            background: var(--accent-soft);
+            border-radius: var(--radius-full);
+            font-size: 0.68rem;
+            color: var(--accent);
+            cursor: pointer;
+        }
+        .synonym-popup .syn-word:hover { background: rgba(107,130,255,0.2); }
+
+        /* ===== DENSITY BAR ===== */
+        .density-bar-container {
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+            margin: 0.2rem 0;
+        }
+        .density-bar {
+            flex: 1;
+            height: 6px;
+            background: var(--border);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .density-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        .density-label {
+            font-size: 0.62rem;
+            color: var(--text-muted);
+            min-width: 40px;
+            text-align: right;
+        }
+
+        /* ===== STICKINESS SCORE ===== */
+        .stickiness-meter {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.6rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+        }
+        .stickiness-score {
+            font-family: var(--font-display);
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        .stickiness-label {
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+<div class="app" id="app">
+    <!-- HEADER -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo-icon">🎵</div>
+            <div>
+                <div class="logo">Composer Studio</div>
+                <div class="header-subtitle">Estudio profesional de composición para Suno AI</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="theme-toggle" onclick="toggleTheme()" title="Cambiar tema"></div>
+            <button class="btn btn-outline btn-sm" onclick="showImportModal()">📥 Importar</button>
+            <button class="btn btn-outline btn-sm" onclick="exportJSON()">💾 JSON</button>
+            <button class="btn btn-success btn-sm" onclick="exportTXT()">⬇️ TXT</button>
+            <button class="btn btn-primary btn-sm" onclick="copyToClipboard()">📋 Copiar</button>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tabs">
+        <button class="tab active" data-tab="editor" onclick="switchTab('editor')">✏️ Editor</button>
+        <button class="tab" data-tab="analysis" onclick="switchTab('analysis')">📊 Análisis</button>
+        <button class="tab" data-tab="preview" onclick="switchTab('preview')">👁️ Vista Previa</button>
+        <button class="tab" data-tab="brainstorm" onclick="switchTab('brainstorm')">💡 Ideas</button>
+        <button class="tab" data-tab="templates" onclick="switchTab('templates')">📋 Plantillas</button>
+        <button class="tab" data-tab="projects" onclick="switchTab('projects')">📁 Proyectos</button>
+        <button class="tab" data-tab="help" onclick="switchTab('help')">❓ Ayuda</button>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main-content">
+
+        <!-- ===== EDITOR TAB ===== -->
+        <div class="tab-panel active" id="panel-editor">
+            <!-- Timeline -->
+            <div class="panel" style="margin-bottom:1rem;">
+                <div class="panel-header">
+                    <div class="panel-title">🎼 Línea de Tiempo</div>
+                    <span class="panel-badge" id="timelineInfo">0 secciones</span>
+                </div>
+                <div class="timeline" id="timeline">
+                    <div class="empty-state" style="width:100%;padding:1rem;">Añade secciones para ver la línea de tiempo</div>
+                </div>
+            </div>
+
+            <div class="grid-2">
+                <!-- LEFT: Structure -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">🧱 Estructura</div>
+                        <span class="panel-badge" id="sectionCount">0 secciones</span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Etiqueta</label>
+                            <select id="tagSelect">
+                                <option value="Intro">Intro</option>
+                                <option value="Verse" selected>Verse</option>
+                                <option value="Pre-Chorus">Pre-Chorus</option>
+                                <option value="Chorus">Chorus</option>
+                                <option value="Post-Chorus">Post-Chorus</option>
+                                <option value="Bridge">Bridge</option>
+                                <option value="Hook">Hook</option>
+                                <option value="Instrumental">Instrumental</option>
+                                <option value="Break">Break</option>
+                                <option value="Interlude">Interlude</option>
+                                <option value="Solo">Solo</option>
+                                <option value="Guitar Solo">Guitar Solo</option>
+                                <option value="Piano Solo">Piano Solo</option>
+                                <option value="Drop">Drop</option>
+                                <option value="Build">Build</option>
+                                <option value="Outro">Outro</option>
+                                <option value="End">End</option>
+                                <option value="Fade Out">Fade Out</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Metadato</label>
+                            <input type="text" id="metaInput" placeholder="ej. piano suave, 120bpm" />
+                        </div>
+                        <button class="btn btn-primary" onclick="addSection()">➕ Añadir</button>
+                    </div>
+
+                    <!-- Mood for new section -->
+                    <div style="margin-bottom:0.7rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.3rem;">Estado de ánimo (nueva sección)</label>
+                        <div class="mood-palette" id="newSectionMoodPalette"></div>
+                    </div>
+
+                    <!-- Quick metas -->
+                    <div style="margin-bottom:0.7rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.2rem;">Metadatos rápidos</label>
+                        <div class="chips" id="quickMetaChips"></div>
+                    </div>
+
+                    <!-- Section List -->
+                    <div class="section-list" id="sectionList">
+                        <div class="empty-state">No hay secciones. Añade una usando el formulario.</div>
+                    </div>
+
+                    <div style="display:flex;gap:0.3rem;flex-wrap:wrap;margin-top:0.6rem;">
+                        <button class="btn btn-outline btn-sm" onclick="duplicateSection()">📑 Duplicar</button>
+                        <button class="btn btn-outline btn-sm" onclick="moveSectionUp()">⬆️</button>
+                        <button class="btn btn-outline btn-sm" onclick="moveSectionDown()">⬇️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteActiveSection()">🗑️</button>
+                        <button class="btn btn-ghost btn-sm" onclick="undoAction()" title="Deshacer">↩️</button>
+                        <button class="btn btn-ghost btn-sm" onclick="redoAction()" title="Rehacer">↪️</button>
+                        <button class="btn btn-ghost btn-sm" onclick="clearAllSections()" style="margin-left:auto;">Limpiar</button>
+                    </div>
+                </div>
+
+                <!-- RIGHT: Lyrics Editor -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">✍️ Letra</div>
+                        <span class="panel-badge" id="activeSectionLabel">Ninguna</span>
+                    </div>
+
+                    <!-- Vocal Cues -->
+                    <div style="margin-bottom:0.6rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.2rem;">Cues vocales</label>
+                        <div class="chips" id="cueChips"></div>
+                    </div>
+
+                    <!-- Dynamic marks -->
+                    <div style="margin-bottom:0.6rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.2rem;">Dinámica / Respiración</label>
+                        <div class="chips" id="dynamicChips"></div>
+                    </div>
+
+                    <!-- Editor -->
+                    <div class="section-editor" id="sectionEditor">
+                        <div class="section-editor-header">
+                            <span class="tag-label" id="editorTagLabel">Selecciona una sección</span>
+                            <span style="font-size:0.68rem;color:var(--text-muted)" id="editorLineCount">0 líneas</span>
+                        </div>
+                        <textarea id="lyricsTextarea" placeholder="Escribe la letra para esta sección...&#10;&#10;Usa cues como (whispered) al inicio de línea&#10;Cada línea será un verso de la canción" oninput="onLyricsChange()" onkeyup="updateRhymeSuggestions()"></textarea>
+                        <div class="section-editor-footer">
+                            <span id="editorCharCount">0 caracteres</span>
+                            <span class="syllable-count" id="editorSyllableCount">~0 sílabas</span>
+                            <span id="editorStatus" style="color:var(--success)">● Listo</span>
+                        </div>
+                    </div>
+
+                    <!-- Rhyme Suggestions -->
+                    <div style="margin-top:0.6rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.2rem;">💡 Sugerencias de rima</label>
+                        <div class="rhyme-panel" id="rhymePanel">
+                            <span style="font-size:0.7rem;color:var(--text-dim);font-style:italic;">Escribe para ver sugerencias de rima...</span>
+                        </div>
+                    </div>
+
+                    <!-- Section Meta -->
+                    <div style="margin-top:0.7rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.2rem;">Metadatos de sección activa</label>
+                        <div class="form-row" style="margin-bottom:0;">
+                            <div class="form-group">
+                                <label>Mood</label>
+                                <input type="text" id="metaMood" placeholder="Dark, Uplifting..." oninput="updateActiveMeta()" />
+                            </div>
+                            <div class="form-group">
+                                <label>Energía</label>
+                                <input type="text" id="metaEnergy" placeholder="Low, High..." oninput="updateActiveMeta()" />
+                            </div>
+                            <div class="form-group">
+                                <label>Vocal</label>
+                                <input type="text" id="metaVocal" placeholder="Whisper, Power..." oninput="updateActiveMeta()" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mood for active section -->
+                    <div style="margin-top:0.6rem;">
+                        <label style="font-size:0.62rem;text-transform:uppercase;letter-spacing:0.5px;color:var(--text-muted);font-weight:600;display:block;margin-bottom:0.2rem;">Color emocional de sección activa</label>
+                        <div class="mood-palette" id="activeSectionMoodPalette"></div>
+                    </div>
+                </div>
+
+                <!-- METRICS -->
+                <div class="panel grid-full">
+                    <div class="panel-header">
+                        <div class="panel-title">📊 Métricas</div>
+                        <span class="panel-badge" id="totalCharBadge">0 / 5000</span>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:0.8rem;">
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricTotalChars">0</div>
+                            <div class="metric-label">Caracteres</div>
+                            <div class="progress-bar"><div class="progress-fill safe" id="progressChars" style="width:0%"></div></div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricTotalLines">0</div>
+                            <div class="metric-label">Líneas</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricSections">0</div>
+                            <div class="metric-label">Secciones</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricSyllables">0</div>
+                            <div class="metric-label">Sílabas totales</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricUniqueWords">0</div>
+                            <div class="metric-label">Palabras únicas</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" id="metricAvgSyllables">0</div>
+                            <div class="metric-label">Sílabas/línea</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== ANALYSIS TAB ===== -->
+        <div class="tab-panel" id="panel-analysis">
+            <div class="grid-2">
+                <!-- Word Cloud -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">🗺️ Mapa de Palabras</div>
+                        <button class="btn btn-ghost btn-xs" onclick="refreshAnalysis()">🔄 Actualizar</button>
+                    </div>
+                    <div class="word-cloud" id="wordCloud">
+                        <span style="color:var(--text-dim);font-style:italic;font-size:0.8rem;">Escribe letra para ver el mapa de palabras</span>
+                    </div>
+                    <div class="helper-text">Las palabras más usadas aparecen más grandes. Haz clic para ver sinónimos.</div>
+                </div>
+
+                <!-- Repeated Words -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">🔁 Palabras Repetidas</div>
+                        <span class="panel-badge" id="repeatCount">0 alertas</span>
+                    </div>
+                    <div id="repeatedWordsList" style="max-height:200px;overflow-y:auto;">
+                        <div class="empty-state">Sin repeticiones excesivas</div>
+                    </div>
+                    <div class="helper-text">Palabras que aparecen más de 3 veces. Considera usar sinónimos.</div>
+                </div>
+
+                <!-- Density Analysis -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">📐 Densidad Lírica por Sección</div>
+                    </div>
+                    <div id="densityAnalysis">
+                        <div class="empty-state">Añade secciones con letra para ver el análisis</div>
+                    </div>
+                </div>
+
+                <!-- Stickiness Score -->
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">🎯 Puntuación de "Pegajosidad"</div>
+                    </div>
+                    <div class="stickiness-meter">
+                        <div class="stickiness-score" id="stickinessScore" style="color:var(--gold);">0</div>
+                        <div>
+                            <div style="font-size:0.8rem;font-weight:600;" id="stickinessLabel">Sin datos</div>
+                            <div class="stickiness-label" id="stickinessDesc">Añade un estribillo para evaluar</div>
+                        </div>
+                    </div>
+                    <div class="helper-text">Evalúa qué tan repetitivo y memorable es tu estribillo. Ideal para pop: 70-90.</div>
+
+                    <!-- Title Generator -->
+                    <div class="separator"></div>
+                    <div class="panel-header">
+                        <div class="panel-title">✨ Generador de Títulos</div>
+                        <button class="btn btn-gold btn-xs" onclick="generateTitles()">🎲 Generar</button>
+                    </div>
+                    <div class="title-suggestions" id="titleSuggestions">
+                        <span style="font-size:0.75rem;color:var(--text-dim);font-style:italic;">Genera títulos basados en tu letra</span>
+                    </div>
+                </div>
+
+                <!-- BPM Suggestion -->
+                <div class="panel grid-full">
+                    <div class="panel-header">
+                        <div class="panel-title">🎵 Sugerencia de Tempo</div>
+                    </div>
+                    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:0.8rem;" id="bpmSuggestions">
+                        <div class="metric-card">
+                            <div class="metric-value" style="color:var(--accent);" id="suggestedBPM">--</div>
+                            <div class="metric-label">BPM Sugerido</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" style="font-size:1rem;" id="suggestedGenre">--</div>
+                            <div class="metric-label">Género probable</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-value" style="font-size:1rem;" id="suggestedMood">--</div>
+                            <div class="metric-label">Mood predominante</div>
+                        </div>
+                    </div>
+                    <div class="helper-text">Basado en los metadatos y estados de ánimo de tus secciones.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== PREVIEW TAB ===== -->
+        <div class="tab-panel" id="panel-preview">
+            <div class="preview-box">
+                <div class="preview-header">
+                    <span>📄 Vista Previa — Formato Suno</span>
+                    <div style="display:flex;gap:0.4rem;align-items:center;">
+                        <label style="font-size:0.7rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+                            <input type="checkbox" id="showMetasCheck" checked onchange="updatePreview()" /> Metadatos
+                        </label>
+                        <label style="font-size:0.7rem;display:flex;align-items:center;gap:0.3rem;cursor:pointer;">
+                            <input type="checkbox" id="highlightRepeatsCheck" onchange="updatePreview()" /> Resaltar repeticiones
+                        </label>
+                        <button class="btn btn-outline btn-sm" onclick="copyToClipboard()">📋 Copiar</button>
+                        <button class="btn btn-success btn-sm" onclick="exportTXT()">⬇️ TXT</button>
+                    </div>
+                </div>
+                <div class="preview-content" id="previewContent">
+                    <span style="color:var(--text-dim);font-style:italic;">La vista previa aparecerá aquí...</span>
+                </div>
+            </div>
+            <div class="helper-text" style="margin-top:0.8rem;">
+                <strong>Formato Suno:</strong> <code>[Section]</code> define secciones. <code>(cue)</code> son indicaciones vocales. Metadatos dentro del corchete: <code>[Chorus (energético)]</code>
+            </div>
+        </div>
+
+        <!-- ===== BRAINSTORM TAB ===== -->
+        <div class="tab-panel" id="panel-brainstorm">
+            <div class="grid-2">
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">💡 Lluvia de Ideas</div>
+                        <span class="panel-badge" id="ideaCount">0 ideas</span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex:3;">
+                            <label>Nueva idea</label>
+                            <input type="text" id="ideaInput" placeholder="Escribe una frase, metáfora o idea..." onkeydown="if(event.key==='Enter')addIdea()" />
+                        </div>
+                        <button class="btn btn-primary" onclick="addIdea()">➕</button>
+                    </div>
+                    <div class="brainstorm-area" id="brainstormArea">
+                        <div class="empty-state" style="width:100%;">Añade ideas aquí. Arrástralas al editor.</div>
+                    </div>
+                    <div class="helper-text" style="margin-top:0.5rem;">💡 Arrastra las ideas al textarea del editor para insertarlas. Click en ✕ para eliminar.</div>
+                    
+                    <div class="separator"></div>
+                    <div class="panel-header">
+                        <div class="panel-title">🎲 Inspiración Aleatoria</div>
+                        <button class="btn btn-gold btn-xs" onclick="generateInspiration()">🎲 Generar</button>
+                    </div>
+                    <div id="inspirationOutput" style="font-family:var(--font-body);font-style:italic;color:var(--text-secondary);font-size:0.85rem;padding:0.5rem;min-height:40px;">
+                        Presiona "Generar" para obtener una frase inspiradora...
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="panel-header">
+                        <div class="panel-title">📜 Historial de Versiones</div>
+                        <button class="btn btn-outline btn-xs" onclick="saveToHistory()">💾 Guardar versión</button>
+                    </div>
+                    <div class="history-list" id="historyList">
+                        <div class="empty-state">Sin versiones guardadas</div>
+                    </div>
+                    <div class="helper-text" style="margin-top:0.5rem;">Guarda versiones para poder volver atrás. Se guardan automáticamente cada 5 minutos.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TEMPLATES TAB ===== -->
+        <div class="tab-panel" id="panel-templates">
+            <div style="margin-bottom:0.8rem;">
+                <h3 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:0.2rem;">📋 Plantillas Predefinidas</h3>
+                <p style="font-size:0.78rem;color:var(--text-muted);font-family:var(--font-body);font-style:italic;">Selecciona una plantilla para cargar una estructura completa con letra de ejemplo.</p>
+            </div>
+            <div class="templates-grid" id="templatesGrid"></div>
+        </div>
+
+        <!-- ===== PROJECTS TAB ===== -->
+        <div class="tab-panel" id="panel-projects">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:0.8rem;flex-wrap:wrap;gap:0.4rem;">
+                <div>
+                    <h3 style="font-family:var(--font-display);font-size:1.1rem;margin-bottom:0.15rem;">📁 Mis Proyectos</h3>
+                    <p style="font-size:0.78rem;color:var(--text-muted);font-family:var(--font-body);font-style:italic;">Guarda y gestiona tus canciones localmente.</p>
+                </div>
+                <div style="display:flex;gap:0.4rem;">
+                    <button class="btn btn-primary btn-sm" onclick="saveProject()">💾 Guardar</button>
+                    <button class="btn btn-outline btn-sm" onclick="importJSON()">📂 Importar</button>
+                </div>
+            </div>
+            <div class="projects-list" id="projectsList">
+                <div class="empty-state">No hay proyectos guardados.</div>
+            </div>
+        </div>
+
+        <!-- ===== HELP TAB ===== -->
+        <div class="tab-panel" id="panel-help">
+            <div class="panel" style="max-width:850px;">
+                <h3 style="font-family:var(--font-display);font-size:1.3rem;margin-bottom:1rem;">❓ Guía del Compositor</h3>
+                
+                <div style="margin-bottom:1.2rem;">
+                    <h4 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:0.4rem;">🧱 Estructura de Secciones</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;font-family:var(--font-body);">
+                        Cada canción se compone de secciones definidas por etiquetas entre corchetes:
+                    </p>
+                    <div class="chips" style="margin-top:0.4rem;">
+                        <span class="chip chip-meta">[Intro]</span>
+                        <span class="chip chip-meta">[Verse]</span>
+                        <span class="chip chip-meta">[Pre-Chorus]</span>
+                        <span class="chip chip-meta">[Chorus]</span>
+                        <span class="chip chip-meta">[Bridge]</span>
+                        <span class="chip chip-meta">[Outro]</span>
+                        <span class="chip chip-meta">[Instrumental]</span>
+                        <span class="chip chip-meta">[Solo]</span>
+                        <span class="chip chip-meta">[Break]</span>
+                        <span class="chip chip-meta">[Hook]</span>
+                        <span class="chip chip-meta">[Drop]</span>
+                        <span class="chip chip-meta">[Build]</span>
+                        <span class="chip chip-meta">[End]</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:1.2rem;">
+                    <h4 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:0.4rem;">🎤 Cues Vocales</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;font-family:var(--font-body);">
+                        Los cues vocales van entre paréntesis al inicio de una línea:
+                    </p>
+                    <div class="chips" style="margin-top:0.4rem;">
+                        <span class="chip chip-cue">(whispered)</span>
+                        <span class="chip chip-cue">(belted)</span>
+                        <span class="chip chip-cue">(soft)</span>
+                        <span class="chip chip-cue">(power)</span>
+                        <span class="chip chip-cue">(falsetto)</span>
+                        <span class="chip chip-cue">(spoken)</span>
+                        <span class="chip chip-cue">(rap)</span>
+                        <span class="chip chip-cue">(humming)</span>
+                        <span class="chip chip-cue">(breathy)</span>
+                        <span class="chip chip-cue">(raspy)</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:1.2rem;">
+                    <h4 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:0.4rem;">🎼 Dinámica y Respiración</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;font-family:var(--font-body);">
+                        Usa notación de dinámica y marcas de respiración para guiar la interpretación:
+                    </p>
+                    <div class="chips" style="margin-top:0.4rem;">
+                        <span class="chip chip-cue">(f) forte</span>
+                        <span class="chip chip-cue">(p) piano</span>
+                        <span class="chip chip-cue">(mf) mezzo-forte</span>
+                        <span class="chip chip-cue">(cresc.) crescendo</span>
+                        <span class="chip chip-cue">(dim.) diminuendo</span>
+                        <span class="chip chip-cue">[respira]</span>
+                        <span class="chip chip-cue">~ sostener</span>
+                    </div>
+                </div>
+
+                <div style="margin-bottom:1.2rem;">
+                    <h4 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:0.4rem;">🎨 Paleta de Estados de Ánimo</h4>
+                    <p style="font-size:0.82rem;color:var(--text-secondary);line-height:1.7;font-family:var(--font-body);">
+                        Asigna un color emocional a cada sección para visualizar el arco emocional de tu canción. Los colores se reflejan en la línea de tiempo.
+                    </p>
+                </div>
+
+                <div style="margin-bottom:1.2rem;">
+                    <h4 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:0.4rem;">⌨️ Atajos de Teclado</h4>
+                    <ul style="font-size:0.82rem;color:var(--text-secondary);line-height:1.8;padding-left:1.5rem;font-family:var(--font-body);">
+                        <li><code>Ctrl+S</code> — Guardar proyecto</li>
+                        <li><code>Ctrl+Enter</code> — Añadir sección</li>
+                        <li><code>Ctrl+Z</code> — Deshacer</li>
+                        <li><code>Ctrl+Y</code> — Rehacer</li>
+                        <li><code>Ctrl+D</code> — Duplicar sección</li>
+                        <li><code>Esc</code> — Cerrar modal</li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 style="font-family:var(--font-display);font-size:1rem;color:var(--accent);margin-bottom:0.4rem;">⚠️ Límites de Suno</h4>
+                    <ul style="font-size:0.82rem;color:var(--text-secondary);line-height:1.8;padding-left:1.5rem;font-family:var(--font-body);">
+                        <li><strong>Letra máxima:</strong> 5000 caracteres</li>
+                        <li><strong>Líneas:</strong> Mantén líneas cortas y "cancionables"</li>
+                        <li><strong>Recomendación:</strong> Menos de 100 caracteres por línea</li>
+                        <li><strong>Versos:</strong> Se numeran automáticamente (Verse 1, Verse 2...)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STATUS BAR -->
+    <div class="status-bar">
+        <div class="status-item">
+            <span class="status-dot"></span>
+            <span id="statusText">Listo</span>
+        </div>
+        <div class="status-item">
+            <span>Autoguardado: </span>
+            <span id="autosaveStatus" style="color:var(--success)">Activo</span>
+        </div>
+        <div class="status-item">
+            <span id="lastSaved">No guardado</span>
+        </div>
+    </div>
+</div>
+
+<!-- TOAST CONTAINER -->
+<div class="toast-container" id="toastContainer"></div>
+<!-- MODAL CONTAINER -->
+<div id="modalContainer"></div>
+<!-- SYNONYM POPUP -->
+<div class="synonym-popup" id="synonymPopup"></div>
+<!-- HIDDEN FILE INPUT -->
+<input type="file" id="fileInput" accept=".json,.txt" style="display:none" onchange="handleFileImport(event)" />
+
+<script>
+// ============================================================
+//  RHYME DICTIONARY (Spanish) - Organized by ending sounds
+// ============================================================
+const RHYME_DICT = {
+    // -ar endings
+    'ar': ['amar','soñar','llorar','cantar','bailar','caminar','hablar','pensar','buscar','encontrar','llegar','pasar','mirar','escuchar','sentir','vivir','morir','reír','llorar','gritar','callar','despertar','olvidar','recordar','esperar','confiar','luchar','ganar','perder','temer','creer','volar','nadar','brillar','suspirar','abrazar','besar','jurar','negar','rogar','implorar','adorar','extrañar','añorar','invitar','destellar','triunfar','fracasar','comenzar','terminar','empezar','comprar','vender','pagar','cobrar','trabajar','descansar','estudiar','enseñar','aprender','viajar','explorar','descubrir','construir','destruir','crear','imaginar','inventar','diseñar','pintar','dibujar','escribir','leer','narrar','contar','explicar','preguntar','responder','gritar','susurrar','murmurar','silbar','tararear','entonar','melodizar','armonizar','componer','interpretar','ensayar','actuar','representar','disfrutar','gozar','celebrar','festejar','brindar','saludar','despedir','regresar','volver','partir','marchar','huir','escapar','correr','saltar','trepar','caer','levantar','sentar','parar','continuar','avanzar','retroceder','girar','rotar','oscilar','vibrar','pulsar','latir','respirar','existir','persistir','insistir','resistir','combatir','rendirse','entregarse','ofrecerse','prometer','cumplir','fallar','equivocar','acertar','adivinar','sospechar','intuir','percibir','comprender','entender','asimilar','absorber','rechazar','aceptar','admitir','negar','ignorar','fingir','simular','aparentar','demostrar','evidenciar','manifestar','expresar','comunicar','transmitir','compartir','dividir','multiplicar','sumar','restar','calcular','medir','pesar','valorar','estimar','apreciar','respetar','honrar','venerar','idolatrar','profanar','sacrificar','ofrendar','dedicar','consagrar','bendecir','maldecir','agradecer','reclamar','exigir','suplicar','demandar','ordenar','mandar','dirigir','guiar','conducir','orientar','desorientar','confundir','aclarar','iluminar','oscurecer','ensombrecer','alumbrar','encender','apagar','soplar','calentar','enfriar','congelar','derretir','evaporar','condensar','precipitar','drenar','inundar','sumergir','flotar','naufragar','zozobrar','equilibrar','desequilibrar','tropezar','resbalar','deslizar','arrastrar','empujar','jalar','soltar','sujetar','agarrar','liberar','aprisionar','encadenar','desatar','anudar','desanudar','tejer','coser','bordar','hilvanar','tramar','urdir','maquinar','planear','proyectar','programar','organizar','preparar','disponer','arreglar','componer','reparar','restaurar','renovar','actualizar','modernizar','antiguar','clasicar','vanguardizar','innovar','reinventar','transformar','metamorfosear','transfigurar','transmutar','transmigrar','emigrar','inmigrar','migrar','peregrinar','deambular','vagar','errar','divagar','meditar','contemplar','reflexionar','considerar','deliberar','discutir','debatir','argumentar','razonar','deducir','inducir','inferir','concluir','sentenciar','fallar','juzgar','condenar','absolver','indultar','perdonar','olvidar','recordar','rememorar','evocar','invocar','conjurar','encantar','hechizar','embrujar','fascinar','cautivar','seducir','tentar','provocar','incitar','estimular','motivar','inspirar','alentar','desalentar','desanimar','deprimir','entristecer','alegrar','contentar','satisfacer','complacer','disgustar','incomodar','molestar','importunar','hostigar','perseguir','acosar','vigilar','custodiar','proteger','defender','atacar','agredir','herir','lastimar','dañar','destruir','aniquilar','exterminar','eliminar','borrar','tachar','cancelar','anular','invalidar','revocar','derogar','abrogar','promulgar','sancionar','aprobar','ratificar','confirmar','verificar','comprobar','certificar','atestiguar','testimoniar','declarar','confesar','reconocer','admitir','confesar','revelar','descubrir','destapar','desvelar','ocultar','esconder','tapar','cubrir','destapar','desnudar','vestir','calzar','desvestir','abrigar','arropar','acunar','mecer','balancear','columpiar','sacudir','agitir','tremolar','ondear','flamear',' ondear','serpentear','zigzaguear','sinuosar','curvar','doblar','torcer','enderezar','alignar','desalignar','desordenar','ordenar','clasificar','categorizar','jerarquizar','priorizar','seleccionar','escoger','elegir','preferir','rechazar','descartar','excluir','incluir','incorporar','integrar','unificar','diversificar','multiplicar','proliferar','germinar','florecer','fructificar','madurar','envejecer','rejuvenecer','renacer','resucitar','revivir','despertar','adormecer','dormir','soñar','roncar','descansar','relajar','distender','contraer','tensar','relajar','soltar','aflojar','apretar','oprimit','estrangular','asfixiar','ahogar','sofocar','respirar','ventilar','airear','oxigenar','purificar','contaminar','ensuciar','limpiar','lavar','fregar','barrer','trapear','planchar','coser','tejer','bordar','pintar','esculpir','tallar','modelar','formar','moldear','configurar','diseñar','trazar','dibujar','pintar','colorear','matizar','sombreadar','iluminar','oscurecer','aclarar','acentuar','disimular','camuflar','disfrazar','enmascarar','revelar','exponer','mostrar','enseñar','exhibir','presentar','introducir','representar','simbolizar','significar','denotar','connotar','sugerir','insinuar','aludir','referir','mencionar','nombrar','denominar','titular','rotular','etiquetar','catalogar','archivar','almacenar','guardar','conservar','preservar','mantener','sostener','soportar','aguantar','resistir','tolerar','admitir','aceptar','acoger','recibir','bienvenir','hospedar','alojar','instalar','ubicar','situar','colocar','posicionar','emplazar','establecer','fundar','crear','originar','generar','producir','fabricar','manufacturar','elaborar','preparar','cocinar','hornear','asar','freír','guisar','sazonar','condimentar','aderezar','decorar','adornar','embellecer','engalanar','ornamentar','embellecer','afeitar','emperifollar','engalanar','embellecer','hermosear','embellecer','feear','deformar','desfigurar','mutilar','lacerar','cicatrizar','sanar','curar','restaurar','reparar','recomponer','reintegrar','restituir','devolver','retornar','regresar','revertir','retroceder','recular','replegar','retirar','apartar','distanciar','separar','dividir','partir','cortar','seccionar','fragmentar','desmenuzar','triturar','moler','pulverizar','atomizar','desintegrar','disolver','fundir','licuar','evaporar','sublimar','cristalizar','solidificar','cuajar','coagular','condensar','precipitar','destilar','filtrar','colar','tamizar','cerner','cribar','seleccionar','escoger','elegir','preferir','optar','decidir','resolver','determinar','fijar','establecer','definir','delimitar','circunscribir','limitar','restringir','ampliar','extender','dilatar','expandir','contraer','comprimir','aplastar','aplanar','alisar','rugosizar','texturizar','granular','atomizar','pulverizar','desintegrar','aniquilar','destruir','demoler','derribar','arrasar','arruinar','devastar','asolar','desolar','entristecer','afligir','acongojar','angustiar','atormentar','torturar','martirizar','crucificar','sacrificar','inmolar','ofrendar','dedicar','consagrar','santificar','bendecir','santificar','glorificar','ensalzar','exaltar','enaltecer','elogiar','alabar','aplaudir','ovacionar','aclamar','vitorear','gritar','bramar','rugir','aullar','gañir','chillar','graznar','cacarear','cantar','tararear','silbar','murmurar','susurrar','cuchichear','musitar','pronunciar','articular','vocalizar','entonar','modular','afinar','destemplar','desafinar','discordar','armonizar','acordar','concordar','discrepar','diferir','divergir','confluir','converger','coincidir','corresponder','equivaler','equiparar','comparar','contrastar','diferenciar','distinguir','discriminar','separar','clasificar','categorizar','tipificar','estereotipar','generalizar','particularizar','especificar','detallar','pormenorizar','minuciar','explayar','extender','desarrollar','evolucionar','progresar','avanzar','retroceder','estancarse','permanecer','persistir','perseverar','insistir','obstinarse','empeñarse','esforzarse','bregar','pujar','forcejear','luchar','combatir','pelear','batallar','guerrear','militar','servir','obedecer','acatar','cumplir','observar','respetar','acatar','violar','infringir','transgredir','incumplir','quebrantar','traspasar','cruzar','atravesar','recorrer','transitar',' circular','deambular','pasear','caminar','marchar','desfilar','procesionar','peregrinar','romerar','viajar','tour','excursionar','explorar','aventurar','arriesgar','osar','atreverse','lanzarse','sumergirse','zambullirse','bañar','lavar','asear','acicalar','arreglar','componer','aderezar','preparar','disponer','organizar','planificar','programar','pautar','reglar','normar','normativizar','reglamentar','legislar','promulgar','publicar','editar','imprimir','tirar','reeditar','reimprimir','publicar','difundir','propagar','divulgar','esparcir','dispersar','regear','derramar','verter','escanciar','servir','dosificar','medir','calcular','cuantificar','computar','computarizar','digitalizar','tecnificar','modernizar','actualizar','renovar','restaurar','reparar','arreglar','componer','enderezar','nivelar','equalizar','equilibrar','compensar','retribuir','recompensar','galardonar','premiar','condecorar','honrar','distinguir','señalar','marcar','tildar','tachar','borrar','eliminar','suprimir','omitir','excluir','exceptuar','reservar','destinar','asignar','atribuir','imputar','achacar','culpar','inculpar','acusar','denunciar','delatar','traicionar','engañar','mentir','faltar','falsear','falsificar','adulterar','corromper','pervertir','depravar','viciar','contaminar','infectar','contagiar','transmitir','propagar','difundir','expandir','extender','ampliar','agrandar','incrementar','aumentar','multiplicar','proliferar','crecer','desarrollar','madurar','envejecer','decrecer','disminuir','menguar','reducir','achicar','empequeñecer','minimizar','maximizar','optimizar','perfeccionar','mejorar','empeorar','deteriorar','dañar','estropear','arruinar','destruir','aniquilar','exterminar','erradicar','eliminar','suprimir','abolir','derogar','anular','cancelar','invalidar','revocar','rehacer','repetir','iterar','reiterar','recapitular','resumir','sintetizar','abstractar','abstraer','concretar','materializar','realizar','efectuar','ejecutar','consumar','perfeccionar',' culminar','rematar','finalizar','terminar','concluir','acabar','cesar','parar','detener','interrumpir','suspender','pausar','descansar','reanudar','continuar','proseguir','seguir','persistir','insistir','reiterar','repetir','redoblar','recargar','sobrecargar','exagerar','amplificar','magnificar','agrandar','diminuir','atenuar','suavizar','dulcificar','amargar','acidificar','salificar','endulzar','azucarar','mielificar','caramelizar','glasear','escarchar','cristalizar','carambizar','helar','congelar','derretir','fundir','licuar','evaporar','vaporizar','nebulizar','atomizar','pulverizar','desmenuzar','triturar','moler','machacar','pistar','majaderar','aporrear','golpear','pegar','castigar','sancionar','penar','multar','gravar','imponer','aplicar','ejecutar','cumplir','satisfacer','colmar','colmatar','llenar','vaciar','drenar','agotar','extenuar','cansar','fatigar','agotar','rendir','someter','dominar','subyugar','esclavizar','liberar','emancipar','independizar','autonomizar','descentralizar','federalizar','confederar','unificar','centralizar','concentrar','dispersar','esparcir','regear','derramar','esparcir','difundir','propagar','divulgar','publicar','pregonar','anunciar','proclamar','decretar','ordenar','mandar','disponer','establecer','instituir','fundar','crear','originar','engendrar','parir','dar a luz','nacer','morir','fallecer','perecer','expirar','sucumbir',' fenecer','deceso','óbito','defunción','tránsito','partida','ausencia','vacío','soledad','silencio','quietud','calma','paz','serenidad','tranquilidad','sosiego','reposo','descanso','sueño','letargo','modorra','somnolencia','vigilia','desvelo','insomnio','alerta','atención','concentración','foco','enfoque','dirección','rumbo','sendero','camino','vía','ruta','itinerario','trayecto','recorrido','travesía','odisea','peregrinación','expedición','aventura','hazaña','proeza','gesta','empresa','misión','cometido','tarea','labor','trabajo','faena','quehacer','oficio','profesión','carrera','vocación','destino','sino','hado','fortuna','suerte','azar','casualidad','coincidencia','sincronicidad','milagro','prodigio','portento','maravilla','asombro','sorpresa','extrañeza','perplejidad','desconcierto','confusión','desorientación','vértigo','mareo','náusea','asco','repugnancia','rechazo','aversión','odio','aborrecimiento','detestación','animadversión','rencor','resentimiento','amargura','envidia','celos','ira','cólera','furia','rabia','enojo','enfado','irritación','molestia','disgusto','pesadumbre','tristeza','melancolía','congoja','aflicción','dolor','sufrimiento','padecimiento','tormento','suplicio','calvario','cruz','carga','peso','obligación','deber','responsabilidad','compromiso','promesa','juramento','voto','palabra','honor','dignidad','orgullo','vanidad','arrogancia','soberbia','humildad','modestia','sencillez','simplicidad','pureza','inocencia','candor','ingenuidad','malicia','astucia','picardía','travesura','trampa','engaño','mentira','falsedad','hipocresía','simulación','apariencia','realidad','verdad','certeza','evidencia','prueba','testimonio','declaración','confesión','revelación','secreto','misterio','enigma','rompecabezas','crucigrama','laberinto','encrucijada','dilema','disyuntiva','alternativa','opción','elección','decisión','resolución','determinación','voluntad','deseo','anhelo','aspiración','ambición','sueño','ilusión','esperanza','fe','creencia','convicción','certidumbre','duda','incertidumbre','desconfianza','recelo','sospecha','temor','miedo','pavor','terror','espanto','horror','angustia','ansiedad','nerviosismo','inquietud','zozobra','desasosiego','agitación','turbación','alteración','conmoción','impacto','shock','trauma','cicatriz','herida','lesión','magulladura','contusión','fractura','rotura','desgarro','rasguño','arañazo','corte','tajo','herida','úlceras','llaga','costra','escara','quemadura','ampolla','vejiga','grano','espinilla','forúnculo','absceso','tumor','bulto','nódulo','quiste','pólipo','verruga','callo','dureza','aspereza','rugosidad','suavidad','tersura','finura','delicadeza','sutileza','elegancia','distinción','clase','estilo','gusto','buen gusto','refinamiento','sofisticación','vulgaridad','grosería','ordinariez','chabacanería','bajeza','mezquindad','ruindad','canallada','infamia','atrocidad','barbarie','crueldad','sadismo','violencia','brutalidad','ferocidad','salvajismo','barbaridad','incivilidad','descortesía','falta de educación','mala educación','grosería','insulto','ofensa','agravio','ultraje','humillación','deshonra','vergüenza','pudor','recato','castidad','virginidad','pureza','inmaculada','santidad','sacralidad','divinidad','deidad','dios','diosa','ángel','arcángel','querubín','serafín','demonio','diablo','satanás','lucifer','pecado','culpa','remordimiento','arrepentimiento','penitencia','expiación','redención','salvación','liberación','emancipación','independencia','autonomía','soberanía','libertad','derecho','justicia','equidad','igualdad','fraternidad','solidaridad','compañerismo','amistad','camaradería','afecto','cariño','ternura','dulzura','suavidad','delicadeza','sensibilidad','emotividad','sentimiento','pasión','ardor','fervor','entusiasmo','excitación','animación','vitalidad','energía','fuerza','potencia','vigor','robustez','salud','sanidad','higiene','limpieza','aseo','pulcritud','esmero','cuidado','atención','mimo','mire','mimo','regalo','obsequio','presente','dádiva','ofrenda','sacrificio','holocausto','martirio','sufrimiento','dolor','agonía','muerte','fin','término','conclusión','desenlace','epílogo','colofón','cierre','clausura','final','remate','coronación','cima','cumbre','cúspide','vértice','ápice','pináculo','cenit','nadir','abismo','simá','profundidad','hondura','fondo','suelo','piso','tierra','terreno','solar','parcela','lote','finca','propiedad','heredad','patrimonio','legado','herencia','testamento','voluntad','disposición','mandato','orden','precepto','norma','regla','ley','estatuto','reglamento','constitución','código','decreto','edicto','banda','proclama','manifiesto','declaración','comunicado','nota','mensaje','carta','epístola','misiva','telegrama','cable','fax','email','correo','misaje','whatsapp','sms','notificación','aviso','alerta','alarma','señal','indicación','indicio','vestigio','rastro','huella','marca','impronta','estigma','cicatriz','señal','signo','símbolo','emblema','blasón','escudo','heráldica','insignia','distintivo','medalla','condecoración','orden','cruz','estrella','laurel','palma','corona','diadema','tiara','mitra','casco','yelmo','armadura','coraza','escudo','espada','daga','puñal','lanza','jabalina','arco','flecha','ballesta','catapulta','cañón','mortero','obús','misil','cohete','bomba','granada','mina','torpedo','torpedear','hundir','sumergir','ahogar','asfixiar','estrangular','sofocar','ahogar','embarcar','desembarcar','navegar','surcar','cruzar','travesía','singladura','travesía','viaje','excursión','paseo','caminata','marcha','carrera','sprint','maratón','triatlón','decatlón','olimpiada','competición','campeonato','liga','torneo','copa','trofeo','medalla','premio','galardón','recompensa','compensación','indemnización','resarcimiento','reparación','compensación','equivalencia','correspondencia','analogía','semejanza','parecido','similitud','afinidad','conexión','relación','vínculo','lazo','nexo','unión','alianza','pacto','tratado','convenio','acuerdo','entendimiento','armonía','concordia','paz','tranquilidad','serenidad','calma','quietud','silencio','mudez','mutismo','callamiento','reserva','secreto','misterio','enigma','incógnita','rompecabezas','crucigrama','acertijo','jeroglífico','laberinto','pasatiempo','juego','diversión','entretenimiento','recreo','ocio','esparcimiento','disfrute','placer','gozo','deleite','satisfacción','alegría','felicidad','dicha','júbilo','contento','regocijo','euforia','entusiasmo','excitación','animación','vitalidad','vivacidad','chispa','ingenio','agudeza','perspicacia','sagacidad','astucia','inteligencia','sabiduría','conocimiento','saber','erudición','cultura','educación','formación','instrucción','enseñanza','aprendizaje','estudio','investigación','análisis','síntesis','reflexión','meditación','contemplación','observación','percepción','sensación','impresión','intuición','corazonada','presentimiento','premonición','profecía','predicción','vaticinio','augurio','pronóstico','presagio','augurio','señal','indicio','síntoma','manifestación','expresión','representación','simbolización','figuración','alegoría','metáfora','símil','comparación','analogía','parábola','fábula','mito','leyenda','cuento','relato','narración','historia','crónica','biografía','autobiografía','memorias','diario','blog','artículo','ensayo','tesis','disertación','tratado','manual','compendio','resumen','sinopsis','síntesis','extracto','antología','colección','recopilación','compilación','archivo','catálogo','inventario','registro','lista','relación','nómina','plantilla','elenco','reparto','equipo','grupo','conjunto','colectivo','comunidad','sociedad','pueblo','nación','patria','territorio','región','comarca','provincia','departamento','estado','país','continente','mundo','universo','cosmos','galaxia','nebulosa','estrella','planeta','satélite','cometa','asteroide','meteorito','constelación','orbitar','gravitar','flotar','derivar','naufragar','zozobrar','perecer','sucumbir','fenecer','expirar','morir','fallecer','deceso','óbito','defunción','tránsito','partida','ausencia','vacío','soledad','silencio','eco','resonancia','reverberación','retumbo','estruendo','fragor','estrépito','ruido','bullicio','alboroto','tumulto','jolgorio','fiesta','celebración','conmemoración','aniversario','cumpleaños','natalicio','defunción','funeral','entierro','sepelio','incineración','cremación','cenizas','polvo','tierra','barro','lodo','fango','cieno','limo','arena','grava','piedra','roca','peñasco','acantilado','montaña','cerro','colina','loma','valle','llanura','pradera','sabana','pampa','desierto','oasis','selva','bosque','arboleda','floresta','jungla','manglar','pantano','ciénaga','laguna','lago','charca','estanque','poza','manantial','fuente','arroyo','riachuelo','río','caudal','corriente','torrente','cascada','catarata','rápido','remanso','delta','estuario','bahía','golfo','ensenada','cala','playa','orilla','ribera','costa','litoral','mar','océano','atlántico','pacífico','índico','ártico','antártico','ola','marejada','tsunami','marea','corriente','tempestad','tormenta','huracán','tifón','ciclón','tornado','vendaval','borrasca','chaparrón','aguacero','lluvia','llovizna','granizo','nieve','helada','escarcha','rocío','niebla','neblina','bruma','vapores','nube','nublado','soleado','despejado','claro','luminoso','brillante','resplandeciente','fulgurante','cegador','opaco','sombrío','tenebroso','oscuro','negro','blanco','gris','rojo','azul','verde','amarillo','naranja','violeta','morado','rosa','marrón','dorado','plateado','cobrizo','bronce','hierro','acero','oro','plata','platino','diamante','rubí','zafiro','esmeralda','topacio','ámbar','perla','coral','marfil','madera','roble','pino','cedro','caoba','nogal','cerezo','manzano','peral','naranjo','limonero','olivo','vid','higuera','palmera','helecho','musgo','liquen','cactus','flor','rosa','lirio','margarita','violeta','jazmín','lavanda','girasol','tulipán','orquídea','dalia','crisantemo','clavel','peonia','loto','flor de lis','hoja','rama','tallo','raíz','semilla','fruto','baya','drupa','cápsula','legumbre','vaina','cáscara','corteza','tronco','madera','leña','carbón','ceniza','humo','fuego','llama','hoguera','pira','antorcha','vela','mecha','pabilo','cerilla','fósforo','encendedor','chispa','centella','rayo','relámpago','trueno','tormenta','tempestad','huracán','tifón','ciclón','vendaval','viento','brisa','céfiro','aura','hálito','suspiro','respiración','aliento',' soplo','boqueada','ahogo','asfixia','sofocación','estrangulamiento','garrote','soga','cuerda','cordel','hilo','cable','alambre','cadena','eslabón','argolla','anillo','sortija','alianza','aro','circunferencia','círculo','esfera','globo','bola','pelota','balón','canica','canica','lente','cristal','vidrio','espejo','reflejo','imagen','retrato','pintura','cuadro','lienzo','fresco','mural','mosaico','vitral','escultura','estatua','busto','relieve','bajorrelieve','altorrelieve','talla','grabado','xilografía','litografía','serigrafía','aguafuerte','punta seca','linóleo','dibujo','boceto','croquis','esbozo','apunte','apuntes','notas','anotaciones','marginalia','comentario','glosa','aclaración','nota al pie','referencia','cita','epígrafe','prólogo','prefacio','introducción','presentación','dedicatoria','agradecimiento','epílogo','colofón','posfacio','apéndice','anexo','suplemento','addenda','fe de erratas','índice','tabla de contenidos','sumario','glosario','vocabulario','léxico','diccionario','tesauro','enciclopedia','atlas','mapa','plano','carta','croquis','esquema','diagrama','gráfico','tabla','cuadro','estadística','cifra','número','dígito','guarismo','cantidad','magnitud','proporción','ratio','porcentaje','fracción','decimal','entero','primo','compuesto','par','impar','positivo','negativo','cero','infinito','aleatorio','azar','suerte','fortuna','destino','hado','sino','karma','dharma','nirvana','samsara','reencarnación','metempsicosis','transmigración','resurrección','renacimiento','regeneración','renovación','restauración','reparación','reforma','revolución','sublevación','alzamiento','motín','rebelión','insurrección','revuelta','pronunciamiento','golpe de estado','putsch','conflicto','guerra','batalla','combate','lid','contienda','pelea','riña','disputa','controversia','debate','discusión','polémica','diatriba','filípica','arenga','discurso','oración','sermón','homilía','plática','conferencia','ponencia','comunicación','exposición','presentación','demostración','manifestación','protesta','reclamación','queja','denuncia','acusación','imputación','cargo','delito','crimen','falta','infracción','transgresión','contravención','ilegalidad','antijuridicidad','inconstitucionalidad','ilegitimidad','injusticia','atropello','abuso','exceso','extralimitación','arbitrariedad','capricho','antojo','ocurrencia','idea','pensamiento','reflexión','meditación','contemplación','ensimismamiento','abstracción','ensoñación','fantasía','imaginación','creatividad','ingenio','talento','genio','inspiración','musa','epifanía','revelación','iluminación','descubrimiento','hallazgo','invención','creación','obra maestra','magnum opus','opus','pieza','composición','partitura','sinfonía','concierto','sonata','cuarteto','trío','dúo','solo','aria','recitativo','coro','himno','cántico','salmo','letanía','oración','plegaria','rezo','avemaría','padrenuestro','credo','gloria','santus','agnus dei','kyrie','magnificat','te deum','réquiem','misа','misa','liturgia','ritual','ceremonia','sacramento','bautismo','confirmación','eucaristía','comunión','confesión','penitencia','unción','matrimonio','orden sacerdotal','extremaunción','viático','sacramental','sacramento','misterio','misterios','rosario','corona','rosario','crucifijo','cruz','estación','vía crucis','nacimiento','pesebre','belén','magos','reyes','epifanía','candelaria','cuaresma','semana santa','pascua','pentecostés','ascensión','corpus christi','todos los santos','inmaculada','navidad','nochebuena','año nuevo','carnaval','miércoles de ceniza','viernes santo','sábado de gloria','domingo de ramos','jueves santo','lunes de pascua','día de muertos','halloween','san valentín','día de la madre','día del padre','día del niño','día del trabajador','día de la raza','día de la constitución','día de la bandera','día de la independencia','fiesta nacional','feriado','vacaciones','asueto','descanso','ocio','recreo','tiempo libre','esparcimiento','diversión','entretenimiento','pasatiempo','hobby','afición','deporte','juego','competición','torneo','campeonato','liga','copa','medalla','trofeo','premio','galardón','reconocimiento','homenaje','tributo','honor','gloria','fama','renombre','prestigio','reputación','honra','dignidad','decoro','pudor','vergüenza','honor','lealtad','fidelidad','lealtad','traición','deslealtad','infidelidad','adulterio','amancebamiento','concubinato','poligamia','monogamia','celibato','castidad','virginidad','pureza','inocencia','candor','ingenuidad','malicia','perversidad','maldad','crueldad','sadismo','masoquismo','fetichismo','voyeurismo','exhibicionismo','narcisismo','egolatría','vanidad','orgullo','soberbia','humildad','modestia','sencillez','austeridad','parsimonia','tacañería','avaricia','codicia','ambición','desmesura','exceso','abuso','moderación','templanza','prudencia','sabiduría','sensatez','cordura','razón','lógica','raciocinio','pensamiento','inteligencia','intelecto','mente','cerebro','psique','alma','espíritu','esencia','naturaleza','carácter','temperamento','índole','talante','disposición','ánimo','estado de ánimo','humor','talante','actitud','apostura','porte','aire','gesto','ademán','movimiento','acción','acto','hecho','suceso','acontecimiento','evento','incidente','episodio','capítulo','escena','acto','jornada','tiempo','época','era','periodo','etapa','fase','momento','instante','segundo','minuto','hora','día','semana','mes','año','década','siglo','milenio','eternidad','infinito','universo','cosmos','espacio','tiempo','materia','energía','vida','muerte','amor','odio','paz','guerra','bien','mal','verdad','mentira','belleza','fealdad','justicia','injusticia','libertad','esclavitud','igualdad','desigualdad','fraternidad','egoísmo','solidaridad','individualismo','colectivismo','capitalismo','socialismo','comunismo','anarquismo','fascismo','democracia','dictadura','monarquía','república','imperio','reino','nación','patria','estado','gobierno','política','economía','sociedad','cultura','civilización','humanidad','naturaleza','tecnología','ciencia','arte','religión','filosofía','historia','geografía','matemáticas','física','química','biología','medicina','ingeniería','arquitectura','literatura','música','pintura','escultura','cine','teatro','danza','fotografía','moda','gastronomía','deporte','educación','comunicación','transporte','energía','medio ambiente','ecología','contaminación','cambio climático','calentamiento global','sostenibilidad','reciclaje','conservación','protección','preservación','restauración','regeneración','renovación','innovación','desarrollo','progreso','evolución','revolución','transformación','cambio','mutación','metamorfosis','transición','adaptación','integración','inclusión','diversidad','pluralidad','multiculturalismo','globalización','mundialización','internacionalización','localismo','regionalismo','nacionalismo','patriotismo','cosmopolitismo','universalismo','humanismo','existencialismo','pragmatismo','idealismo','realismo','materialismo','espiritualismo','racionalismo','empirismo','positivismo','fenomenología','hermenéutica','estructuralismo','postestructuralismo','deconstrucción','posestructuralismo','modernismo','posmodernismo','vanguardia','neovanguardia','clasicismo','neoclasicismo','romanticismo','realismo','naturalismo','impresionismo','expresionismo','cubismo','futurismo','dadaísmo','surrealismo','abstracto','figurativo','conceptual','minimalismo','pop art','arte povera','land art','performance','instalación','videoarte','net art','bioarte','arte digital','arte interactivo','arte generativo','inteligencia artificial','machine learning','deep learning','red neuronal','algoritmo','programa','software','hardware','computadora','ordenador','dispositivo','máquina','robot','androide','cyborg','inteligencia artificial','realidad virtual','realidad aumentada','metaverso','blockchain','criptomoneda','bitcoin','ethereum','nft','token','minería','nube','cloud','servidor','red','internet','web','página','sitio','aplicación','app','plataforma','sistema','red social','comunidad virtual','influencer','viral','trending','hashtag','meme','gif','sticker','emoji','emoticono','mensaje','chat','conversación','diálogo','debate','discusión','foro','blog','podcast','streaming','video','audio','imagen','foto','selfie','story','reel','tiktok','youtube','instagram','facebook','twitter','whatsapp','telegram','signal','discord','slack','teams','zoom','skype','meet','hangout','call','videollamada','conferencia','webinar','tutorial','curso','clase','lección','módulo','unidad','tema','asignatura','materia','carrera','grado','máster','doctorado','tesis','investigación','experimento','prueba','test','examen','evaluación','calificación','nota','aprobado','suspendido','diploma','certificado','título','licencia','permiso','autorización','consentimiento','aprobación','rechazo','veto','prohibición','restricción','limitación','regulación','norma','ley','decreto','ordenanza','reglamento','estatuto','constitución','carta magna','tratado','convenio','pacto','acuerdo','contrato','convenio','compromiso','obligación','deber','derecho','libertad','igualdad','fraternidad','justicia','equidad','solidaridad','respeto','tolerancia','diversidad','inclusión','participación','democracia','república','monarquía','dictadura','totalitarismo','autoritarismo','fascismo','nazismo','comunismo','socialismo','capitalismo','liberalismo','conservadurismo','progresismo','anarquismo','ecologismo','feminismo','pacifismo','humanismo','laicismo','ateísmo','agnosticismo','espiritualidad','religiosidad','fe','creencia','dogma','herejía','ortodoxia','heterodoxia','sincretismo','misticismo','esoterismo','ocultismo','magia','brujería','chamanismo','animismo','totemismo','politeísmo','monoteísmo','panteísmo','deísmo','teísmo','agnosticismo','ateísmo','nihilismo','escepticismo','cinismo','estoicismo','epicureísmo','hedonismo','utilitarismo','pragmatismo','existencialismo','fenomenología','hermenéutica','estructuralismo','posestructuralismo','deconstrucción','posmodernidad','modernidad','iluminación','renacimiento','barroco','rococó','neoclasicismo','romanticismo','realismo','naturalismo','impresionismo','simbolismo','expresionismo','cubismo','futurismo','dadaísmo','surrealismo','abstracto','pop art','minimalismo','conceptual','performance','instalación','videoarte','net art','bioarte','arte digital','arte generativo','inteligencia artificial','machine learning','deep learning','algoritmo','programa','código','lenguaje','sintaxis','semántica','pragmática','gramática','léxico','vocabulario','diccionario','tesauro','enciclopedia','biblioteca','archivo','museo','galería','exposición','muestra','feria','salón','bienal','trienal','cuatrienal','quinquenal','decenal','centenario','milenario','aniversario','conmemoración','celebración','fiesta','festival','carnaval','feria','mercado','bazar','tianguis','rastro','subasta','remate','liquidación','oferta','descuento','rebaja','promoción','publicidad','propaganda','marketing','mercadotecnia','venta','compra','transacción','negocio','empresa','compañía','corporación','multinacional','transnacional','pyme','startup','emprendimiento','autónomo','freelance','trabajador','empleado','jefe','director','gerente','presidente',' CEO','fundador','socio','accionista','inversor','capitalista','banquero','financiero','economista','analista','consultor','asesor','coach','mentor','tutor','profesor','maestro','docente','educador','pedagogo','andragogo','investigador','científico','técnico','ingeniero','arquitecto','diseñador','artista','músico','cantante','compositor','intérprete','actor','actriz','director de cine','productor','guionista','fotógrafo','pintor','escultor','escritor','poeta','novelista','ensayista','periodista','reportero','corresponsal','editor','corrector','traductor','intérprete','lingüista','filólogo','historiador','filósofo','sociólogo','antropólogo','psicólogo','psiquiatra','médico','cirujano','enfermero','farmacéutico','odontólogo','veterinario','biólogo','químico','físico','matemático','astrónomo','geólogo','geógrafo','ecólogo','ambientalista','activista','político','diplomático','embajador','cónsul','ministro','senador','diputado','alcalde','gobernador','presidente','juez','magistrado','fiscal','abogado','notario','registrador','policía','militar','soldado','marinero','aviador','bombero','paramédico','rescatista','voluntario','filántropo','misionero','sacerdote','pastor','rabino','imán','monje','fraile','monja','santón','gurú','chamán','curandero','hierbero','brujo','mago','ilusionista','prestidigitador','malabarista','acróbata','trapecista','domador','payaso','bufón','juglar','trovador','bardo','rapsoda','aedo','poeta','vate','literato','escritor','autor','creador','inventor','descubridor','explorador','conquistador','colonizador','inmigrante','emigrante','refugiado','exiliado','desplazado','migrante','nómada','trashumante','peregrino','viajero','turista','excursionista','montañero','alpinista','escalador','buceador','nadador','surfero','regatista','regatista','piloto','conductor','chofer','taxista','camionero','transportista','ciclista','motociclista','peatón','caminante','andarín','corredor','maratonista','atleta','deportista','jugador','competidor','campeón','subcampeón','medallista','recordman','leyenda','mito','ídolo','héroe','heroína','villano','antihéroe','protagonista','antagonista','personaje','figura','estrella','celebridad','famoso','influencer','youtuber','tiktoker','blogger','vlogger','podcaster','streamer','gamer','hacker','programador','desarrollador','diseñador web','community manager','seo','analista de datos','científico de datos','ingeniero de software','arquitecto de software','devops','sysadmin','hacker ético','pentester','forense digital','perito informático','consultor ti','project manager','scrum master','product owner','ux designer','ui designer','researcher','analista funcional','qa tester','automatizador','desarrollador frontend','desarrollador backend','desarrollador fullstack','desarrollador mobile','desarrollador ios','desarrollador android','desarrollador flutter','desarrollador react native','desarrollador unity','desarrollador unreal','desarrollador blockchain','desarrollador solidity','desarrollador rust','desarrollador go','desarrollador python','desarrollador javascript','desarrollador typescript','desarrollador java','desarrollador c#','desarrollador php','desarrollador ruby','desarrollador swift','desarrollador kotlin','desarrollador dart']
+};
+
+// Build reverse index for fast lookup
+const RHYME_INDEX = {};
+for (const [ending, words] of Object.entries(RHYME_DICT)) {
+    words.forEach(w => {
+        if (!RHYME_INDEX[w]) RHYME_INDEX[w] = ending;
+    });
+}
+
+// ============================================================
+//  SYNONYM DICTIONARY (Spanish)
+// ============================================================
+const SYNONYMS = {
+    'amor': ['cariño','afecto','pasión','ternura','devoción','adoración','entrega','apego','inclinación','simpatía'],
+    'tristeza': ['pena','dolor','melancolía','congoja','aflicción','pesadumbre','desdicha','amargura','desconsuelo','abatimiento'],
+    'alegría': ['felicidad','dicha','júbilo','contento','gozo','regocijo','euforia','entusiasmo','placer','satisfacción'],
+    'miedo': ['temor','pavor','terror','espanto','horror','angustia','pánico','zozobra','inquietud','aprensión'],
+    'enojo': ['ira','cólera','furia','rabia','enfado','irritación','indignación','resentimiento','exasperación','fastidio'],
+    'grande': ['enorme','vasto','inmenso','colosal','gigante','magnífico','grandioso','considerable','descomunal','monumental'],
+    'pequeño': ['diminuto','minúsculo','reducido',' diminuto','chico','menudo','microscópico','ínfimo','compacto','menor'],
+    'bonito': ['hermoso','bello','precioso','lindo','atractivo','estupendo','magnífico','encantador','radiante','espléndido'],
+    'feo': ['horrible','espantoso','repulsivo','deforme','grotesco','repugnante','desagradable','espantoso','abominable','detestable'],
+    'rápido': ['veloz','ligero','ágil','presuroso','raudo','acelerado','vertiginoso','fugaz','instantáneo','exprés'],
+    'lento': ['pausado','tardo','moroso','calmoso','sosegado','tranquilo','parsimonioso','perezoso','gradual','progresivo'],
+    'fuerte': ['robusto','vigoroso','potente','recio','resistente','tenaz','férreo','sólido','imponente','hercúleo'],
+    'débil': ['frágil','flojo','endeble','delicado','enclenque','vulnerable','flaco','débil','quebradizo','frágil'],
+    'oscuro': ['sombrío','tenebroso','lóbrego','umbrío','opaco','negro','negruzco','ennegrecido','sombrío','tétrico'],
+    'luz': ['luminosidad','claridad','brillo','resplandor','fulgor','destello','refulgencia','claror','iluminación','lumbre'],
+    'noche': ['oscuridad','tiniebla','penumbra','crepúsculo','anochecer','madrugada','medianoche','velada','trasnoche','nocturnidad'],
+    'día': ['jornada','luz','claridad','mañana','tarde','alba','amanecer','mediodía','ocaso','crepúsculo'],
+    'cielo': ['firmamento','bóveda celeste','espacio','atmósfera','éter','azur','cenit','cúpula','alto','infinidad'],
+    'mar': ['océano','piélago','onda','oleaje','marea','agua salada','inmensidad azul','abismo marino','honda','sal'],
+    'tierra': ['suelo','terreno','planeta','mundo','globo','orbe','superficie','corteza','continente','solar'],
+    'fuego': ['llama','hoguera','pira','incendio','ardor','calor','brasa','fogata','rescoldo','combustión'],
+    'agua': ['líquido','fluido','humedad','corriente','caudal','ola','gota','rocío','manantial','arroyo'],
+    'viento': ['brisa','céfiro','ráfaga','vendaval','huracán','tempestad','aire','hálito','suspiro',' soplo'],
+    'sol': ['astro rey','luz','estrella','luminaria','fulgor','resplandor','claridad','día','calor','ardor'],
+    'luna': ['satélite','astro','claro lunar','luz nocturna','plenilunio','lunación','selene','artemisa','creciente','menguante'],
+    'estrella': ['astro','lucero','luminaria','constelación','sirio','polar','fugaz','centelleante','fulgurante','resplandeciente'],
+    'corazón': ['víscera','pecho','alma','centro','núcleo','esencia','sentimiento','emoción','pasión','amor'],
+    'alma': ['espíritu','esencia','ser','vida','interior','sentimiento','conciencia','psique','ánima','entidad'],
+    'sueño': ['ensueño','quimera','ilusión','fantasía','utopía','ideal','anhelo','esperanza','deseo','aspiración'],
+    'camino': ['sendero','ruta','vía','senda','trayecto','recorrido','itinerario','pista','huella','derrotero'],
+    'casa': ['hogar','vivienda','morada','residencia','domicilio','lar','techo','refugio','nido','habitáculo'],
+    'vida': ['existencia','vivencia','biografía','trayectoria','periplo','andadura','curso','camino','sendero','experiencia'],
+    'muerte': ['deceso','fallecimiento','óbito','defunción','fin','término','extinción','desaparición','tránsito','partida'],
+    'tiempo': ['época','era','periodo','momento','instante','segundo','minuto','hora','día','año'],
+    'mundo': ['universo','cosmos','tierra','orbe','globo','planeta','humanidad','sociedad','civilización','creación'],
+    'pensamiento': ['idea','reflexión','meditación','consideración','razonamiento','concepto','noción','juicio','teoría','tesis'],
+    'palabra': ['término','vocablo','expresión','frase','enunciado','verbo','dicción','locución','giro','voz'],
+    'silencio': ['mudez','mutismo','quietud','calma','sosiego','tranquilidad','paz','callamiento','reserva','secreto'],
+    'lluvia': ['aguacero','chaparrón','llovizna','precipitación','diluvio','tormenta','chubasco','torrencial','celaje','pluvial'],
+    'flor': ['rosa','lirio','margarita','violeta','jazmín','orquídea','tulipán','girasol','dalia','clavel'],
+    'bosque': ['selva','floresta','arboleda','jungla','monte','frondosidad','masa forestal','arboleda','pinar','robledal'],
+    'montaña': ['cerro','colina','cumbre','pico','sierra','cordillera','elevación','altitud','macizo','volcán'],
+    'río': ['arroyo','riachuelo','caudal','corriente','afluente','torrente','quebrada','manantial','delta','estuario'],
+    'ciudad': ['urbe','metrópoli','municipio','población','capital','localidad','villa','pueblo','comarca','distrito'],
+    'guerra': ['conflicto','batalla','combate','contienda','lid','confrontación','hostilidad','bélico','lucha','pelea'],
+    'paz': ['tranquilidad','serenidad','calma','sosiego','quietud','armonía','concordia','equilibrio','calma','placidez'],
+    'libertad': ['independencia','autonomía','emancipación','liberación','soberanía','derecho','albedrío','exención','franquicia','permiso'],
+    'verdad': ['certeza','realidad','evidencia','autenticidad','veracidad','exactitud','precisión','rigor','fiabilidad','confiabilidad'],
+    'mentira': ['falsedad','engaño','embuste','patraña','falacia','inexactitud','ficción','artificio','simulación','hipocresía'],
+    'belleza': ['hermosura','preciosidad','elegancia','gracia','encanto','atractivo','estética','armonía','perfección','sublimidad'],
+    'poder': ['fuerza','potencia','autoridad','dominio','influencia','mando','control','hegemonía','preponderancia','supremacía'],
+    'riqueza': ['fortuna','opulencia','abundancia','prosperidad','bienestar','holgura','desahogo','caudal','tesoro','patrimonio'],
+    'pobreza': ['miseria','indigencia','necesidad','escasez','carencia','penuria','privación','destitución','mendruguez','desamparo']
+};
+
+// ============================================================
+//  MOOD PALETTE
+// ============================================================
+const MOODS = [
+    { name: 'Alegre', color: '#fbbf24', bg: 'rgba(251,191,36,0.15)' },
+    { name: 'Triste', color: '#3b82f6', bg: 'rgba(59,130,246,0.15)' },
+    { name: 'Energético', color: '#ef4444', bg: 'rgba(239,68,68,0.15)' },
+    { name: 'Romántico', color: '#ec4899', bg: 'rgba(236,72,153,0.15)' },
+    { name: 'Oscuro', color: '#6366f1', bg: 'rgba(99,102,241,0.15)' },
+    { name: 'Melancólico', color: '#8b5cf6', bg: 'rgba(139,92,246,0.15)' },
+    { name: 'Épico', color: '#f59e0b', bg: 'rgba(245,158,11,0.15)' },
+    { name: 'Relajado', color: '#10b981', bg: 'rgba(16,185,129,0.15)' },
+    { name: 'Misterioso', color: '#6d28d9', bg: 'rgba(109,40,217,0.15)' },
+    { name: 'Nostálgico', color: '#a78bfa', bg: 'rgba(167,139,250,0.15)' },
+    { name: 'Agresivo', color: '#dc2626', bg: 'rgba(220,38,38,0.15)' },
+    { name: 'Esperanzador', color: '#34d399', bg: 'rgba(52,211,153,0.15)' }
+];
+
+// ============================================================
+//  VOCAL CUES
+// ============================================================
+const VOCAL_CUES = [
+    '(whispered)', '(belted)', '(soft)', '(power)', '(falsetto)',
+    '(spoken)', '(rap)', '(humming)', '(shouting)', '(breathy)',
+    '(crying)', '(laughing)', '(sigh)', '(chanting)', '(operatic)',
+    '(raspy)', '(smooth)', '(aggressive)', '(tender)', '(ethereal)'
+];
+
+// ============================================================
+//  DYNAMIC MARKS
+// ============================================================
+const DYNAMIC_MARKS = [
+    '(pp) pianissimo', '(p) piano', '(mp) mezzo-piano', '(mf) mezzo-forte',
+    '(f) forte', '(ff) fortissimo', '(cresc.) crescendo', '(dim.) diminuendo',
+    '[respira]', '~ sostener', '(accel.) acelerando', '(rit.) ritardando'
+];
+
+// ============================================================
+//  QUICK METAS
+// ============================================================
+const QUICK_METAS = [
+    'acústico', 'eléctrico', 'suave', 'energético', 'melancólico',
+    'eufórico', 'oscuro', 'luminoso', 'íntimo', 'épico',
+    'minimalista', 'orquestal', 'sintético', 'orgánico', 'atmosférico',
+    'agresivo', 'romántico', 'nostálgico', 'futurista', 'raw',
+    '120bpm', '80bpm', '140bpm', 'piano', 'guitarra'
+];
+
+// ============================================================
+//  TEMPLATES
+// ============================================================
+const TEMPLATES = [
+    {
+        name: '🎸 Pop Estándar',
+        desc: 'Estructura pop clásica con versos, estribillo y puente',
+        tags: ['Pop', 'Estándar', '4 min'],
+        sections: [
+            { tag: 'Intro', meta: 'piano suave, atmosférico', lyrics: '(instrumental)', mood: 'Relajado' },
+            { tag: 'Verse', meta: 'voz íntima, acústico', lyrics: '(soft)\nBajo la luz de la luna\ntu recuerdo me acompaña\nen cada paso que doy\nen cada noche tranquila', mood: 'Nostálgico' },
+            { tag: 'Pre-Chorus', meta: 'crece la tensión', lyrics: '(building)\nY siento que el tiempo se detiene\ncuando pienso en ti', mood: 'Esperanzador' },
+            { tag: 'Chorus', meta: 'energético, coros, alto', lyrics: '(belted)\nComo estrellas en la noche\nbrillamos juntos sin final\nnuestro amor es infinito\nmás fuerte que la realidad', mood: 'Épico' },
+            { tag: 'Verse', meta: 'voz + cuerdas', lyrics: '(soft)\nCamino por las calles vacías\nbuscando tu voz en el viento\ncada esquina guarda un momento\nque no quiero olvidar', mood: 'Melancólico' },
+            { tag: 'Chorus', meta: 'energético, coros', lyrics: '(belted)\nComo estrellas en la noche\nbrillamos juntos sin final\nnuestro amor es infinito\nmás fuerte que la realidad', mood: 'Épico' },
+            { tag: 'Bridge', meta: 'melancólico, piano', lyrics: '(whispered)\nY si un día el cielo se oscurece\nsé que tu luz me guiará\nporque en mi corazón llevarte\nes lo único que importa ya', mood: 'Romántico' },
+            { tag: 'Chorus', meta: 'gran finale', lyrics: '(power)\nComo estrellas en la noche\nbrillamos juntos sin final\nnuestro amor es infinito\nmás fuerte que la realidad', mood: 'Alegre' },
+            { tag: 'Outro', meta: 'fade out, piano', lyrics: '(soft)\nMás fuerte que la realidad...', mood: 'Relajado' }
+        ]
+    },
+    {
+        name: '🎤 Rap / Hip-Hop',
+        desc: 'Versos largos, hook pegadizo y drop potente',
+        tags: ['Rap', 'Hip-Hop', 'Beat'],
+        sections: [
+            { tag: 'Intro', meta: 'beat pesado, atmosférico', lyrics: '(spoken)\nYeah... escucha...\nesto es para los que nunca se rinden', mood: 'Energético' },
+            { tag: 'Verse', meta: 'flow rápido, beat intenso', lyrics: '(rap)\nDespierto cada mañana con la mente en la cima\nescribo versos que pesan, cada rima es mi arma\nno me detiene nada, ni el miedo ni la duda\nsi caigo mil veces, me levanto con más fuerza', mood: 'Agresivo' },
+            { tag: 'Hook', meta: 'catchy, repetitivo', lyrics: '(belted)\nNo paramos, no paramos\nsubimos hasta el cielo y bajamos\nno paramos, no paramos\nesta es nuestra hora, la reclamamos', mood: 'Energético' },
+            { tag: 'Verse', meta: 'flow variado, storytelling', lyrics: '(rap)\nDesde abajo hasta la cima, cada paso cuenta\nlas cicatrices son medallas, la vida nos intenta\ndoblegar pero seguimos, más fuertes que ayer\nescribiendo nuestra historia, nada nos puede parar', mood: 'Agresivo' },
+            { tag: 'Hook', meta: 'energético', lyrics: '(belted)\nNo paramos, no paramos\nsubimos hasta el cielo y bajamos\nno paramos, no paramos\nesta es nuestra hora, la reclamamos', mood: 'Energético' },
+            { tag: 'Bridge', meta: 'beat stripped, emotivo', lyrics: '(spoken)\nY cuando todo parece perdido\nrecuerdo de dónde vengo\ny sé que esto apenas comienza', mood: 'Melancólico' },
+            { tag: 'Drop', meta: 'bass heavy, máximo energy', lyrics: '(instrumental)', mood: 'Energético' },
+            { tag: 'Hook', meta: 'finale épico', lyrics: '(power)\nNo paramos, no paramos\nsubimos hasta el cielo y bajamos', mood: 'Épico' },
+            { tag: 'Outro', meta: 'fade, beat se desvanece', lyrics: '(spoken)\nLa reclamamos...', mood: 'Relajado' }
+        ]
+    },
+    {
+        name: '🎹 Balada Épica',
+        desc: 'Crescendo emocional con piano y orquestación',
+        tags: ['Balada', 'Épica', 'Emotiva'],
+        sections: [
+            { tag: 'Intro', meta: 'piano solo, rubato', lyrics: '(instrumental)', mood: 'Melancólico' },
+            { tag: 'Verse', meta: 'piano + voz, íntimo', lyrics: '(soft)\nEn el silencio de la madrugada\ntu nombre resuena en mi memoria\ncomo un eco de una vida pasada\nque se niega a ser solo historia', mood: 'Triste' },
+            { tag: 'Verse', meta: 'añade cuerdas suaves', lyrics: '(soft)\nCada fotografía que guardo\nes un fragmento de lo que fuimos\ncada canción que suena a lo lejos\nme recuerda los sueños que compartimos', mood: 'Nostálgico' },
+            { tag: 'Pre-Chorus', meta: 'crescendo, orquestación crece', lyrics: '(building)\nY aunque el tiempo pase lento\ny la distancia nos separe\nhay algo que nunca muere\nalgo que nadie puede borrar', mood: 'Esperanzador' },
+            { tag: 'Chorus', meta: 'orquestal completo, power', lyrics: '(belted)\nPorque te llevo en el alma\ncomo el mar lleva la sal\nporque eres mi calma\nen medio de este vendaval', mood: 'Épico' },
+            { tag: 'Bridge', meta: 'piano solo, emotivo', lyrics: '(whispered)\nY si pudiera volver atrás\nno cambiaría ni un segundo\nporque cada lágrima, cada risa\nme trajo hasta este momento', mood: 'Romántico' },
+            { tag: 'Chorus', meta: 'gran finale, fortissimo', lyrics: '(power)\nPorque te llevo en el alma\ncomo el mar lleva la sal\nporque eres mi calma\nen medio de este vendaval', mood: 'Épico' },
+            { tag: 'Outro', meta: 'piano solo, ritardando', lyrics: '(soft)\nLo que somos al amar...', mood: 'Melancólico' }
+        ]
+    },
+    {
+        name: '🎵 Electrónica / EDM',
+        desc: 'Build-ups, drops y breakdowns para la pista',
+        tags: ['EDM', 'Electrónica', 'Festival'],
+        sections: [
+            { tag: 'Intro', meta: 'synth pad, atmosférico, 128bpm', lyrics: '(instrumental)', mood: 'Misterioso' },
+            { tag: 'Verse', meta: 'beat mínimo, vocal procesada', lyrics: '(breathy)\nLost in the neon lights\npulsing through the night\nevery beat aligns\nwith your heartbeat mine', mood: 'Energético' },
+            { tag: 'Build', meta: 'snare roll, risers', lyrics: '(building)\nCan you feel it rising\nhigher, higher, higher\ncan you feel it now', mood: 'Energético' },
+            { tag: 'Drop', meta: 'bass drop, máximo energy', lyrics: '(instrumental)', mood: 'Energético' },
+            { tag: 'Break', meta: 'stripped, atmospheric', lyrics: '(whispered)\nIn this moment\neverything is still\njust the music\njust the thrill', mood: 'Relajado' },
+            { tag: 'Build', meta: 'segundo build, más intenso', lyrics: '(building)\nHands up, feel the bass\nlet it take you away\nhigher, higher, higher', mood: 'Energético' },
+            { tag: 'Drop', meta: 'double drop, máximo impacto', lyrics: '(instrumental)', mood: 'Energético' },
+            { tag: 'Outro', meta: 'fade, synth pad decay', lyrics: '(instrumental)', mood: 'Relajado' }
+        ]
+    },
+    {
+        name: '🎶 Rock Alternativo',
+        desc: 'Dinámica suave-fuerte, guitarras distorsionadas',
+        tags: ['Rock', 'Alternativo', 'Dinámico'],
+        sections: [
+            { tag: 'Intro', meta: 'guitarra limpia, delay', lyrics: '(instrumental)', mood: 'Misterioso' },
+            { tag: 'Verse', meta: 'guitarra limpia, voz contenida', lyrics: '(soft)\nWalking through the broken streets\nshadows dancing at my feet\nnothing feels the way it should\nnothing here is understood', mood: 'Oscuro' },
+            { tag: 'Pre-Chorus', meta: 'distorsión entra, crece', lyrics: '(building)\nBut I can feel the fire rising\nburning through the compromise', mood: 'Energético' },
+            { tag: 'Chorus', meta: 'full band, distorsión', lyrics: '(belted)\nWe are the ones who never sleep\nchasing dreams too dark and deep\nscreaming loud into the void\nnothing left to be destroyed', mood: 'Agresivo' },
+            { tag: 'Verse', meta: 'bass driven, más intenso', lyrics: '(power)\nConcrete walls are closing in\nbut I will break right through the skin\nevery scar tells me a story\nof the price I paid for glory', mood: 'Agresivo' },
+            { tag: 'Chorus', meta: 'full band, energético', lyrics: '(belted)\nWe are the ones who never sleep\nchasing dreams too dark and deep', mood: 'Agresivo' },
+            { tag: 'Bridge', meta: 'breakdown, medio tiempo', lyrics: '(spoken)\nThey tried to silence us\nthey tried to make us small\nbut we are still here\nstanding through it all', mood: 'Oscuro' },
+            { tag: 'Guitar Solo', meta: 'distorsión máxima', lyrics: '(instrumental)', mood: 'Épico' },
+            { tag: 'Chorus', meta: 'máxima energía', lyrics: '(power)\nWe are the ones who never sleep\nNOTHING LEFT TO BE DESTROYED', mood: 'Agresivo' },
+            { tag: 'Outro', meta: 'feedback, drums final hit', lyrics: '(instrumental)', mood: 'Energético' }
+        ]
+    },
+    {
+        name: '🌙 Lo-Fi / Chill',
+        desc: 'Relajado, atmosférico, ideal para lo-fi beats',
+        tags: ['Lo-Fi', 'Chill', 'Relajado'],
+        sections: [
+            { tag: 'Intro', meta: 'vinyl crackle, piano suave, 85bpm', lyrics: '(instrumental)', mood: 'Relajado' },
+            { tag: 'Verse', meta: 'voz suave, beat lo-fi', lyrics: '(whispered)\nRaindrops on the window pane\ncoffee cup, a gentle rain\nnothing urgent, nothing new\njust this moment, just you', mood: 'Relajado' },
+            { tag: 'Hook', meta: 'melódico, suave', lyrics: '(soft)\nFloating through the afternoon\nhumming a familiar tune\nnowhere to be, nothing to prove\njust letting the hours move', mood: 'Relajado' },
+            { tag: 'Instrumental', meta: 'piano solo, jazzy chords', lyrics: '(instrumental)', mood: 'Relajado' },
+            { tag: 'Verse', meta: 'añade bajo suave', lyrics: '(whispered)\nPages turning, one by one\nchasing shadows of the sun\nin this quiet space I find\npeace of an unhurried mind', mood: 'Relajado' },
+            { tag: 'Hook', meta: 'suave, melódico', lyrics: '(soft)\nFloating through the afternoon\nhumming a familiar tune', mood: 'Relajado' },
+            { tag: 'Outro', meta: 'fade, vinyl crackle', lyrics: '(humming)\nmmm... mmm...', mood: 'Relajado' }
+        ]
+    }
+];
+
+// ============================================================
+//  INSPIRATION PHRASES
+// ============================================================
+const INSPIRATION_PHRASES = [
+    "El silencio entre notas es tan importante como las notas mismas.",
+    "Escribe desde la herida, no desde la mente.",
+    "La mejor letra es la que no necesita explicación.",
+    "Si puedes cantarla llorando, es una buena canción.",
+    "No busques la rima perfecta, busca la verdad.",
+    "Cada verso es una puerta. No todas necesitan abrirse.",
+    "El estribillo es el corazón. Haz que lata fuerte.",
+    "A veces una sola palabra vale más que mil.",
+    "La música es el lenguaje de lo innombrable.",
+    "Escribe como si nadie fuera a leerlo. Canta como si nadie fuera a escucharte.",
+    "Las mejores canciones nacen de las preguntas, no de las respuestas.",
+    "No cuentes la historia. Haz que el oyente la viva.",
+    "El contraste es el alma de la emoción: de lo suave a lo intenso.",
+    "Una metáfora vale más que cien descripciones.",
+    "Deja espacio para que el oyente complete la canción con su propia vida.",
+    "La repetición no es monotonía si cada vez significa algo distinto.",
+    "El puente es donde la canción se reinventa. No lo desperdicies.",
+    "Si la letra no te eriza la piel, reescríbela.",
+    "Las palabras más simples son las más difíciles de decir bien.",
+    "Una canción es un viaje. Asegúrate de que el destino valga la pena.",
+    "El silencio después del último acorde también es música.",
+    "No escribas lo que sientes. Escribe lo que sientes cuando no sientes nada.",
+    "La rima es un eco. Úsala para crear resonancia, no para forzar.",
+    "Tu voz interior sabe la canción antes que tú. Escúchala.",
+    "La imperfección es lo que hace humana una canción perfecta.",
+    "Escribe para tu yo de hace diez años. O para tu yo de dentro de diez.",
+    "La mejor inspiración viene cuando dejas de buscarla.",
+    "Una canción es un mapa. Las palabras son los puntos cardinales.",
+    "No temas al cliché. Teme a la indiferencia.",
+    "El ritmo de las palabras importa tanto como su significado."
+];
+
+// ============================================================
+//  STATE
+// ============================================================
+const APP_KEY = 'suno_composer_v3';
+const PROJECTS_KEY = 'suno_composer_projects_v3';
+const MAX_CHARS = 5000;
+
+let state = {
+    sections: [],
+    activeSectionIndex: -1,
+    projectName: 'Sin título',
+    ideas: [],
+    history: [],
+    selectedMoodForNew: 'Alegre'
+};
+
+let undoStack = [];
+let redoStack = [];
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadState();
+    loadTheme();
+    renderMoodPalettes();
+    renderCueChips();
+    renderDynamicChips();
+    renderQuickMetas();
+    renderTemplates();
+    renderSectionList();
+    renderTimeline();
+    renderProjects();
+    renderBrainstorm();
+    renderHistory();
+    updatePreview();
+    updateMetrics();
+    setupAutosave();
+    setupKeyboardShortcuts();
+    setupDragDrop();
+
+    document.getElementById('metaInput').addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') { e.preventDefault(); addSection(); }
+    });
+});
+
+// ============================================================
+//  THEME
+// ============================================================
+function toggleTheme() {
+    const current = document.documentElement.getAttribute('data-theme');
+    const next = current === 'light' ? 'dark' : 'light';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('suno_theme', next);
+}
+
+function loadTheme() {
+    const saved = localStorage.getItem('suno_theme') || 'dark';
+    document.documentElement.setAttribute('data-theme', saved);
+}
+
+// ============================================================
+//  PERSISTENCE
+// ============================================================
+function saveState() {
+    try {
+        localStorage.setItem(APP_KEY, JSON.stringify(state));
+        document.getElementById('lastSaved').textContent = 'Guardado: ' + new Date().toLocaleTimeString();
+    } catch (e) { console.warn('Error saving:', e); }
+}
+
+function loadState() {
+    try {
+        const saved = localStorage.getItem(APP_KEY);
+        if (saved) {
+            state = JSON.parse(saved);
+            if (state.activeSectionIndex >= state.sections.length) {
+                state.activeSectionIndex = state.sections.length - 1;
+            }
+        }
+    } catch (e) { console.warn('Error loading:', e); }
+}
+
+function setupAutosave() {
+    setInterval(() => {
+        saveState();
+        // Auto-save to history every 5 minutes
+    }, 300000);
+    setInterval(() => { saveState(); }, 30000);
+}
+
+// ============================================================
+//  TABS
+// ============================================================
+function switchTab(tabId) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector(`[data-tab="${tabId}"]`).classList.add('active');
+    document.getElementById(`panel-${tabId}`).classList.add('active');
+    if (tabId === 'preview') updatePreview();
+    if (tabId === 'analysis') refreshAnalysis();
+    if (tabId === 'projects') renderProjects();
+}
+
+// ============================================================
+//  UNDO/REDO
+// ============================================================
+function pushUndo() {
+    undoStack.push(JSON.stringify(state.sections));
+    if (undoStack.length > 50) undoStack.shift();
+    redoStack = [];
+}
+
+function undoAction() {
+    if (undoStack.length === 0) { showToast('Nada que deshacer', 'info'); return; }
+    redoStack.push(JSON.stringify(state.sections));
+    state.sections = JSON.parse(undoStack.pop());
+    if (state.activeSectionIndex >= state.sections.length) state.activeSectionIndex = state.sections.length - 1;
+    renderAll();
+    showToast('Deshecho', 'info');
+}
+
+function redoAction() {
+    if (redoStack.length === 0) { showToast('Nada que rehacer', 'info'); return; }
+    undoStack.push(JSON.stringify(state.sections));
+    state.sections = JSON.parse(redoStack.pop());
+    if (state.activeSectionIndex >= state.sections.length) state.activeSectionIndex = state.sections.length - 1;
+    renderAll();
+    showToast('Rehecho', 'info');
+}
+
+function renderAll() {
+    renderSectionList();
+    renderTimeline();
+    updateActiveEditor();
+    updatePreview();
+    updateMetrics();
+    saveState();
+}
+
+// ============================================================
+//  SECTION MANAGEMENT
+// ============================================================
+function addSection() {
+    pushUndo();
+    const tag = document.getElementById('tagSelect').value;
+    const meta = document.getElementById('metaInput').value.trim();
+    const section = createSection(tag, meta);
+    section.mood = state.selectedMoodForNew || 'Alegre';
+    state.sections.push(section);
+    state.activeSectionIndex = state.sections.length - 1;
+    document.getElementById('metaInput').value = '';
+    renderAll();
+    showToast('Sección añadida', 'success');
+}
+
+function createSection(tag, meta = '', lyrics = '') {
+    return {
+        id: Date.now() + Math.random(),
+        tag, meta, lyrics,
+        mood: 'Alegre',
+        moodColor: '',
+        moodEnergy: '',
+        moodVocal: ''
+    };
+}
+
+function selectSection(index) {
+    state.activeSectionIndex = index;
+    renderSectionList();
+    renderTimeline();
+    updateActiveEditor();
+}
+
+function deleteActiveSection() {
+    if (state.activeSectionIndex < 0) { showToast('Selecciona una sección', 'warning'); return; }
+    pushUndo();
+    state.sections.splice(state.activeSectionIndex, 1);
+    if (state.activeSectionIndex >= state.sections.length) state.activeSectionIndex = state.sections.length - 1;
+    renderAll();
+    showToast('Sección eliminada', 'info');
+}
+
+function duplicateSection() {
+    if (state.activeSectionIndex < 0) { showToast('Selecciona una sección', 'warning'); return; }
+    pushUndo();
+    const orig = state.sections[state.activeSectionIndex];
+    const copy = createSection(orig.tag, orig.meta, orig.lyrics);
+    copy.mood = orig.mood;
+    state.sections.splice(state.activeSectionIndex + 1, 0, copy);
+    state.activeSectionIndex++;
+    renderAll();
+    showToast('Sección duplicada', 'success');
+}
+
+function moveSectionUp() {
+    if (state.activeSectionIndex <= 0) return;
+    pushUndo();
+    const i = state.activeSectionIndex;
+    [state.sections[i], state.sections[i-1]] = [state.sections[i-1], state.sections[i]];
+    state.activeSectionIndex--;
+    renderAll();
+}
+
+function moveSectionDown() {
+    if (state.activeSectionIndex >= state.sections.length - 1) return;
+    pushUndo();
+    const i = state.activeSectionIndex;
+    [state.sections[i], state.sections[i+1]] = [state.sections[i+1], state.sections[i]];
+    state.activeSectionIndex++;
+    renderAll();
+}
+
+function clearAllSections() {
+    if (state.sections.length === 0) return;
+    if (!confirm('¿Eliminar todas las secciones?')) return;
+    pushUndo();
+    state.sections = [];
+    state.activeSectionIndex = -1;
+    renderAll();
+    showToast('Todas las secciones eliminadas', 'info');
+}
+
+function deleteSectionByIndex(index) {
+    pushUndo();
+    state.sections.splice(index, 1);
+    if (state.activeSectionIndex >= state.sections.length) state.activeSectionIndex = state.sections.length - 1;
+    else if (state.activeSectionIndex > index) state.activeSectionIndex--;
+    renderAll();
+}
+
+function editSectionMeta(index) {
+    const section = state.sections[index];
+    const newMeta = prompt('Editar metadato:', section.meta);
+    if (newMeta !== null) {
+        pushUndo();
+        section.meta = newMeta.trim();
+        renderAll();
+    }
+}
+
+function moveSectionUpByIndex(index) {
+    if (index <= 0) return;
+    pushUndo();
+    [state.sections[index], state.sections[index-1]] = [state.sections[index-1], state.sections[index]];
+    if (state.activeSectionIndex === index) state.activeSectionIndex--;
+    else if (state.activeSectionIndex === index - 1) state.activeSectionIndex++;
+    renderAll();
+}
+
+function moveSectionDownByIndex(index) {
+    if (index >= state.sections.length - 1) return;
+    pushUndo();
+    [state.sections[index], state.sections[index+1]] = [state.sections[index+1], state.sections[index]];
+    if (state.activeSectionIndex === index) state.activeSectionIndex++;
+    else if (state.activeSectionIndex === index + 1) state.activeSectionIndex--;
+    renderAll();
+}
+
+// ============================================================
+//  RENDER SECTION LIST
+// ============================================================
+function renderSectionList() {
+    const list = document.getElementById('sectionList');
+    const count = document.getElementById('sectionCount');
+
+    if (state.sections.length === 0) {
+        list.innerHTML = '<div class="empty-state">No hay secciones. Añade una usando el formulario.</div>';
+        count.textContent = '0 secciones';
+        return;
+    }
+
+    let html = '';
+    let verseCount = 0;
+    let chorusCount = 0;
+
+    state.sections.forEach((section, index) => {
+        const isActive = index === state.activeSectionIndex;
+        let displayTag = section.tag;
+        if (section.tag === 'Verse') { verseCount++; displayTag = `Verse ${verseCount}`; }
+        else if (section.tag === 'Chorus') { chorusCount++; if (chorusCount > 1) displayTag = `Chorus ${chorusCount}`; }
+
+        const mood = MOODS.find(m => m.name === section.mood) || MOODS[0];
+        const metaDisplay = section.meta || '—';
+
+        html += `
+            <div class="section-item ${isActive ? 'active' : ''}" data-index="${index}"
+                 onclick="selectSection(${index})" draggable="true"
+                 ondragstart="onDragStart(event,${index})" ondragover="onDragOver(event)"
+                 ondrop="onDrop(event,${index})" ondragend="onDragEnd(event)">
+                <span class="drag-handle" title="Arrastrar">⠿</span>
+                <span class="section-mood-dot" style="background:${mood.color}" title="${section.mood}"></span>
+                <span class="section-tag">${displayTag}</span>
+                <span class="section-meta" title="${section.meta || ''}">${metaDisplay}</span>
+                <div class="section-actions">
+                    <button onclick="event.stopPropagation();moveSectionUpByIndex(${index})" title="Subir">⬆</button>
+                    <button onclick="event.stopPropagation();moveSectionDownByIndex(${index})" title="Bajar">⬇</button>
+                    <button onclick="event.stopPropagation();editSectionMeta(${index})" title="Editar">✏️</button>
+                    <button class="delete-btn" onclick="event.stopPropagation();deleteSectionByIndex(${index})" title="Eliminar">✕</button>
+                </div>
+            </div>`;
+    });
+
+    list.innerHTML = html;
+    count.textContent = state.sections.length + ' secciones';
+}
+
+// ============================================================
+//  DRAG & DROP
+// ============================================================
+let dragIndex = -1;
+
+function onDragStart(e, index) {
+    dragIndex = index;
+    e.target.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+}
+function onDragOver(e) { e.preventDefault(); e.dataTransfer.dropEffect = 'move'; }
+function onDrop(e, targetIndex) {
+    e.preventDefault();
+    if (dragIndex === targetIndex) return;
+    pushUndo();
+    const [moved] = state.sections.splice(dragIndex, 1);
+    state.sections.splice(targetIndex, 0, moved);
+    if (state.activeSectionIndex === dragIndex) state.activeSectionIndex = targetIndex;
+    else if (dragIndex < state.activeSectionIndex && targetIndex >= state.activeSectionIndex) state.activeSectionIndex--;
+    else if (dragIndex > state.activeSectionIndex && targetIndex <= state.activeSectionIndex) state.activeSectionIndex++;
+    renderAll();
+    showToast('Sección movida', 'info');
+}
+function onDragEnd(e) { e.target.classList.remove('dragging'); dragIndex = -1; }
+
+// ============================================================
+//  TIMELINE
+// ============================================================
+function renderTimeline() {
+    const timeline = document.getElementById('timeline');
+    const info = document.getElementById('timelineInfo');
+
+    if (state.sections.length === 0) {
+        timeline.innerHTML = '<div class="empty-state" style="width:100%;padding:1rem;">Añade secciones para ver la línea de tiempo</div>';
+        info.textContent = '0 secciones';
+        return;
+    }
+
+    let html = '';
+    let verseCount = 0, chorusCount = 0;
+    state.sections.forEach((section, index) => {
+        const isActive = index === state.activeSectionIndex;
+        let displayTag = section.tag;
+        if (section.tag === 'Verse') { verseCount++; displayTag = `V${verseCount}`; }
+        else if (section.tag === 'Chorus') { chorusCount++; displayTag = chorusCount > 1 ? `C${chorusCount}` : 'C'; }
+        else if (section.tag === 'Intro') displayTag = 'In';
+        else if (section.tag === 'Outro') displayTag = 'Out';
+        else if (section.tag === 'Bridge') displayTag = 'Br';
+        else if (section.tag === 'Pre-Chorus') displayTag = 'PC';
+        else if (section.tag === 'Hook') displayTag = 'Hk';
+        else if (section.tag === 'Drop') displayTag = 'Dr';
+        else if (section.tag === 'Build') displayTag = 'Bd';
+        else if (section.tag === 'Solo') displayTag = 'So';
+        else if (section.tag === 'Instrumental') displayTag = 'Inst';
+        else if (section.tag === 'Break') displayTag = 'Bk';
+        else displayTag = section.tag.substring(0, 3);
+
+        const mood = MOODS.find(m => m.name === section.mood) || MOODS[0];
+
+        html += `
+            <div class="timeline-block ${isActive ? 'active' : ''}" 
+                 style="background:${mood.bg};color:${mood.color};border-color:${isActive ? mood.color : 'transparent'}"
+                 onclick="selectSection(${index})" title="${section.tag}${section.meta ? ' ('+section.meta+')' : ''}">
+                <div class="block-label">${displayTag}</div>
+            </div>`;
+    });
+
+    timeline.innerHTML = html;
+    info.textContent = state.sections.length + ' secciones';
+}
+
+// ============================================================
+//  ACTIVE EDITOR
+// ============================================================
+function updateActiveEditor() {
+    const textarea = document.getElementById('lyricsTextarea');
+    const tagLabel = document.getElementById('editorTagLabel');
+    const lineCount = document.getElementById('editorLineCount');
+    const charCount = document.getElementById('editorCharCount');
+    const sylCount = document.getElementById('editorSyllableCount');
+    const activeLabel = document.getElementById('activeSectionLabel');
+    const metaMood = document.getElementById('metaMood');
+    const metaEnergy = document.getElementById('metaEnergy');
+    const metaVocal = document.getElementById('metaVocal');
+
+    if (state.activeSectionIndex < 0 || state.activeSectionIndex >= state.sections.length) {
+        textarea.value = '';
+        textarea.disabled = true;
+        tagLabel.textContent = 'Selecciona una sección';
+        activeLabel.textContent = 'Ninguna';
+        lineCount.textContent = '0 líneas';
+        charCount.textContent = '0 caracteres';
+        sylCount.textContent = '~0 sílabas';
+        metaMood.value = '';
+        metaEnergy.value = '';
+        metaVocal.value = '';
+        return;
+    }
+
+    const section = state.sections[state.activeSectionIndex];
+    textarea.disabled = false;
+    textarea.value = section.lyrics || '';
+
+    let displayTag = section.tag;
+    if (section.tag === 'Verse') {
+        let vc = 0;
+        for (let i = 0; i <= state.activeSectionIndex; i++) if (state.sections[i].tag === 'Verse') vc++;
+        displayTag = `Verse ${vc}`;
+    }
+
+    tagLabel.textContent = `[${displayTag}]` + (section.meta ? ` (${section.meta})` : '');
+    activeLabel.textContent = displayTag;
+
+    const lines = (section.lyrics || '').split('\n').filter(l => l.trim());
+    lineCount.textContent = lines.length + ' líneas';
+    charCount.textContent = (section.lyrics || '').length + ' caracteres';
+    sylCount.textContent = '~' + countSyllables(section.lyrics || '') + ' sílabas';
+
+    metaMood.value = section.moodEnergy || '';
+    metaEnergy.value = section.moodEnergy || '';
+    metaVocal.value = section.moodVocal || '';
+
+    // Update active mood palette
+    updateActiveMoodSelection();
+    updateRhymeSuggestions();
+}
+
+function onLyricsChange() {
+    if (state.activeSectionIndex < 0) return;
+    const textarea = document.getElementById('lyricsTextarea');
+    state.sections[state.activeSectionIndex].lyrics = textarea.value;
+
+    const lines = textarea.value.split('\n').filter(l => l.trim());
+    document.getElementById('editorLineCount').textContent = lines.length + ' líneas';
+    document.getElementById('editorCharCount').textContent = textarea.value.length + ' caracteres';
+    document.getElementById('editorSyllableCount').textContent = '~' + countSyllables(textarea.value) + ' sílabas';
+
+    updatePreview();
+    updateMetrics();
+    saveState();
+}
+
+function updateActiveMeta() {
+    if (state.activeSectionIndex < 0) return;
+    const section = state.sections[state.activeSectionIndex];
+    section.moodEnergy = document.getElementById('metaMood').value.trim();
+    section.moodEnergy = document.getElementById('metaEnergy').value.trim();
+    section.moodVocal = document.getElementById('metaVocal').value.trim();
+    renderSectionList();
+    renderTimeline();
+    updatePreview();
+    saveState();
+}
+
+// ============================================================
+//  MOOD PALETTES
+// ============================================================
+function renderMoodPalettes() {
+    const newPalette = document.getElementById('newSectionMoodPalette');
+    const activePalette = document.getElementById('activeSectionMoodPalette');
+
+    let html = '';
+    MOODS.forEach(mood => {
+        html += `<div class="mood-option" style="background:${mood.bg};color:${mood.color}" 
+                      data-mood="${mood.name}" onclick="selectMoodForNew('${mood.name}')">${mood.name}</div>`;
+    });
+    newPalette.innerHTML = html;
+    activePalette.innerHTML = html.replace(/selectMoodForNew/g, 'selectMoodForActive');
+
+    // Select default
+    updateNewMoodSelection();
+}
+
+function selectMoodForNew(moodName) {
+    state.selectedMoodForNew = moodName;
+    updateNewMoodSelection();
+}
+
+function selectMoodForActive(moodName) {
+    if (state.activeSectionIndex < 0) { showToast('Selecciona una sección', 'warning'); return; }
+    state.sections[state.activeSectionIndex].mood = moodName;
+    updateActiveMoodSelection();
+    renderSectionList();
+    renderTimeline();
+    saveState();
+}
+
+function updateNewMoodSelection() {
+    document.querySelectorAll('#newSectionMoodPalette .mood-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.mood === state.selectedMoodForNew);
+    });
+}
+
+function updateActiveMoodSelection() {
+    if (state.activeSectionIndex < 0) return;
+    const currentMood = state.sections[state.activeSectionIndex].mood || 'Alegre';
+    document.querySelectorAll('#activeSectionMoodPalette .mood-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.mood === currentMood);
+    });
+}
+
+// ============================================================
+//  CHIPS (Cues, Dynamics, Metas)
+// ============================================================
+function renderCueChips() {
+    const container = document.getElementById('cueChips');
+    container.innerHTML = VOCAL_CUES.map(cue =>
+        `<span class="chip chip-cue" onclick="insertCue('${cue}')" title="Insertar">${cue}</span>`
+    ).join('');
+}
+
+function renderDynamicChips() {
+    const container = document.getElementById('dynamicChips');
+    container.innerHTML = DYNAMIC_MARKS.map(mark =>
+        `<span class="chip chip-cue" onclick="insertCue('${mark}')" title="Insertar">${mark}</span>`
+    ).join('');
+}
+
+function renderQuickMetas() {
+    const container = document.getElementById('quickMetaChips');
+    container.innerHTML = QUICK_METAS.map(meta =>
+        `<span class="chip chip-meta" onclick="addQuickMeta('${meta}')" title="Añadir a sección activa">${meta}</span>`
+    ).join('');
+}
+
+function addQuickMeta(meta) {
+    if (state.activeSectionIndex < 0) { showToast('Selecciona una sección', 'warning'); return; }
+    const section = state.sections[state.activeSectionIndex];
+    section.meta = section.meta ? section.meta + ', ' + meta : meta;
+    renderSectionList();
+    updateActiveEditor();
+    updatePreview();
+    saveState();
+    showToast(`"${meta}" añadido`, 'success');
+}
+
+function insertCue(cue) {
+    const textarea = document.getElementById('lyricsTextarea');
+    if (textarea.disabled) { showToast('Selecciona una sección', 'warning'); return; }
+
+    const start = textarea.selectionStart;
+    const text = textarea.value;
+    const lineStart = text.lastIndexOf('\n', start - 1) + 1;
+    const currentLine = text.substring(lineStart, text.indexOf('\n', start) === -1 ? text.length : text.indexOf('\n', start));
+
+    if (currentLine.trim() === '') {
+        textarea.value = text.substring(0, lineStart) + cue + ' ' + text.substring(lineStart);
+        textarea.selectionStart = textarea.selectionEnd = lineStart + cue.length + 1;
+    } else {
+        textarea.value = text.substring(0, start) + cue + ' ' + text.substring(start);
+        textarea.selectionStart = textarea.selectionEnd = start + cue.length + 1;
+    }
+
+    textarea.focus();
+    onLyricsChange();
+}
+
+// ============================================================
+//  SYLLABLE COUNTER (Spanish)
+// ============================================================
+function countSyllables(text) {
+    if (!text.trim()) return 0;
+    const lines = text.split('\n').filter(l => l.trim());
+    let total = 0;
+    lines.forEach(line => {
+        // Remove cues in parentheses
+        let cleanLine = line.replace(/\([^)]*\)/g, '').trim();
+        if (!cleanLine) return;
+        const words = cleanLine.split(/\s+/);
+        let lineSyllables = 0;
+        words.forEach(word => {
+            lineSyllables += countWordSyllables(word);
+        });
+        total += lineSyllables;
+    });
+    return total;
+}
+
+function countWordSyllables(word) {
+    word = word.toLowerCase().replace(/[^a-záéíóúüñ]/g, '');
+    if (!word) return 0;
+
+    // Count vowel groups
+    const vowels = 'aeiouáéíóúü';
+    let count = 0;
+    let inVowel = false;
+
+    for (let i = 0; i < word.length; i++) {
+        const isVowel = vowels.includes(word[i]);
+        if (isVowel && !inVowel) {
+            count++;
+            inVowel = true;
+        } else if (!isVowel) {
+            inVowel = false;
+        }
+    }
+
+    // Handle diphthongs (simplify: treat certain vowel combos as one syllable)
+    const strongVowels = 'aeoáéíóú';
+    const weakVowels = 'iuü';
+    
+    // Adjust for common Spanish patterns
+    if (count === 0) count = 1;
+    return count;
+}
+
+// ============================================================
+//  RHYME SUGGESTIONS
+// ============================================================
+function updateRhymeSuggestions() {
+    const textarea = document.getElementById('lyricsTextarea');
+    const panel = document.getElementById('rhymePanel');
+    
+    const text = textarea.value;
+    const cursorPos = textarea.selectionStart;
+    
+    // Get current line
+    const lineStart = text.lastIndexOf('\n', cursorPos - 1) + 1;
+    const lineEnd = text.indexOf('\n', cursorPos);
+    const currentLine = text.substring(lineStart, lineEnd === -1 ? text.length : lineEnd);
+    
+    // Get last word of current line
+    const words = currentLine.trim().split(/\s+/);
+    const lastWord = words[words.length - 1] || '';
+    
+    if (lastWord.length < 2) {
+        panel.innerHTML = '<span style="font-size:0.7rem;color:var(--text-dim);font-style:italic;">Escribe para ver sugerencias de rima...</span>';
+        return;
+    }
+
+    const cleanWord = lastWord.toLowerCase().replace(/[^a-záéíóúüñ]/g, '');
+    if (cleanWord.length < 2) return;
+
+    // Find rhymes by matching last 2-3 characters
+    const ending2 = cleanWord.slice(-2);
+    const ending3 = cleanWord.slice(-3);
+    
+    let rhymes = new Set();
+    
+    // Search in dictionary
+    for (const [ending, words] of Object.entries(RHYME_DICT)) {
+        if (ending === ending2 || ending === ending3 || ending2.endsWith(ending) || ending3.endsWith(ending)) {
+            words.forEach(w => {
+                if (w !== cleanWord && w.length >= 3) rhymes.add(w);
+            });
+        }
+    }
+
+    // Also search by similar endings
+    for (const [ending, words] of Object.entries(RHYME_DICT)) {
+        if (cleanWord.endsWith(ending) || ending.endsWith(ending2)) {
+            words.forEach(w => {
+                if (w !== cleanWord && w.length >= 3) rhymes.add(w);
+            });
+        }
+    }
+
+    const rhymeArray = Array.from(rhymes).slice(0, 30);
+    
+    if (rhymeArray.length === 0) {
+        panel.innerHTML = `<span style="font-size:0.7rem;color:var(--text-dim);font-style:italic;">Sin rimas encontradas para "${cleanWord}"</span>`;
+        return;
+    }
+
+    panel.innerHTML = `<div style="font-size:0.65rem;color:var(--text-muted);margin-bottom:0.3rem;">Rimas para "${cleanWord}":</div>` +
+        rhymeArray.map(w => `<span class="rhyme-word" onclick="insertRhyme('${w}')">${w}</span>`).join('');
+}
+
+function insertRhyme(word) {
+    const textarea = document.getElementById('lyricsTextarea');
+    if (textarea.disabled) return;
+    
+    const start = textarea.selectionStart;
+    const text = textarea.value;
+    const lineStart = text.lastIndexOf('\n', start - 1) + 1;
+    const currentLine = text.substring(lineStart, text.indexOf('\n', start) === -1 ? text.length : text.indexOf('\n', start));
+    const words = currentLine.trim().split(/\s+/);
+    const lastWord = words[words.length - 1] || '';
+    
+    // Replace last word or insert
+    if (lastWord) {
+        const lastWordStart = text.lastIndexOf(lastWord, start);
+        if (lastWordStart >= lineStart) {
+            textarea.value = text.substring(0, lastWordStart) + word + text.substring(lastWordStart + lastWord.length);
+            textarea.selectionStart = textarea.selectionEnd = lastWordStart + word.length;
+        }
+    } else {
+        textarea.value = text.substring(0, start) + word + text.substring(start);
+        textarea.selectionStart = textarea.selectionEnd = start + word.length;
+    }
+    
+    textarea.focus();
+    onLyricsChange();
+}
+
+// ============================================================
+//  GENERATE OUTPUT
+// ============================================================
+function generateOutput() {
+    let output = '';
+    let verseCount = 0, chorusCount = 0;
+    const showMetas = document.getElementById('showMetasCheck')?.checked ?? true;
+
+    state.sections.forEach((section) => {
+        let displayTag = section.tag;
+        if (section.tag === 'Verse') { verseCount++; displayTag = `Verse ${verseCount}`; }
+        else if (section.tag === 'Chorus') { chorusCount++; if (chorusCount > 1) displayTag = `Chorus ${chorusCount}`; }
+
+        let metaParts = [];
+        if (showMetas && section.meta) metaParts.push(section.meta);
+        if (showMetas && section.moodEnergy) metaParts.push(`Mood: ${section.moodEnergy}`);
+        if (showMetas && section.moodVocal) metaParts.push(`Vocal: ${section.moodVocal}`);
+
+        const metaStr = metaParts.length > 0 ? ` (${metaParts.join(', ')})` : '';
+        output += `[${displayTag}${metaStr}]\n`;
+
+        if (section.lyrics && section.lyrics.trim()) output += section.lyrics + '\n';
+        output += '\n';
+    });
+
+    return output.trim();
+}
+
+function generatePlainText() {
+    let output = '';
+    let verseCount = 0, chorusCount = 0;
+
+    state.sections.forEach((section) => {
+        let displayTag = section.tag;
+        if (section.tag === 'Verse') { verseCount++; displayTag = `Verse ${verseCount}`; }
+        else if (section.tag === 'Chorus') { chorusCount++; if (chorusCount > 1) displayTag = `Chorus ${chorusCount}`; }
+
+        let metaParts = [];
+        if (section.meta) metaParts.push(section.meta);
+        if (section.moodEnergy) metaParts.push(`Mood: ${section.moodEnergy}`);
+        if (section.moodVocal) metaParts.push(`Vocal: ${section.moodVocal}`);
+
+        const metaStr = metaParts.length > 0 ? ` (${metaParts.join(', ')})` : '';
+        output += `[${displayTag}${metaStr}]\n`;
+        if (section.lyrics && section.lyrics.trim()) output += section.lyrics + '\n';
+        output += '\n';
+    });
+
+    return output.trim();
+}
+
+// ============================================================
+//  PREVIEW
+// ============================================================
+function updatePreview() {
+    const previewEl = document.getElementById('previewContent');
+    const output = generateOutput();
+
+    if (!output) {
+        previewEl.innerHTML = '<span style="color:var(--text-dim);font-style:italic;">La vista previa aparecerá aquí...</span>';
+        return;
+    }
+
+    const highlightRepeats = document.getElementById('highlightRepeatsCheck')?.checked ?? false;
+    const repeatedWords = highlightRepeats ? getRepeatedWords() : new Set();
+
+    let html = '';
+    const lines = output.split('\n');
+    lines.forEach(line => {
+        if (line.match(/^\[.*\]$/)) {
+            html += `<span class="tag-line">${escapeHtml(line)}</span>\n`;
+        } else if (line.match(/^\(.*\)/)) {
+            html += `<span class="cue-line">${escapeHtml(line)}</span>\n`;
+        } else if (line.trim() === '') {
+            html += '\n';
+        } else {
+            let escapedLine = escapeHtml(line);
+            if (highlightRepeats && repeatedWords.size > 0) {
+                repeatedWords.forEach(word => {
+                    const regex = new RegExp(`\\b(${word})\\b`, 'gi');
+                    escapedLine = escapedLine.replace(regex, '<span class="repeat-word">$1</span>');
+                });
+            }
+            html += `<span class="lyric-line">${escapedLine}</span>\n`;
+        }
+    });
+
+    previewEl.innerHTML = html;
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// ============================================================
+//  METRICS
+// ============================================================
+function updateMetrics() {
+    const output = generatePlainText();
+    const totalChars = output.length;
+    const allLines = output.split('\n').filter(l => l.trim());
+    const totalLines = allLines.length;
+    const totalSyllables = countSyllables(state.sections.map(s => s.lyrics || '').join('\n'));
+    const allWords = getAllWords();
+    const uniqueWords = new Set(allWords.map(w => w.toLowerCase()));
+
+    document.getElementById('metricTotalChars').textContent = totalChars;
+    document.getElementById('metricTotalLines').textContent = totalLines;
+    document.getElementById('metricSections').textContent = state.sections.length;
+    document.getElementById('metricSyllables').textContent = totalSyllables;
+    document.getElementById('metricUniqueWords').textContent = uniqueWords.size;
+    document.getElementById('metricAvgSyllables').textContent = totalLines > 0 ? Math.round(totalSyllables / totalLines) : 0;
+    document.getElementById('totalCharBadge').textContent = `${totalChars} / ${MAX_CHARS}`;
+
+    const progress = document.getElementById('progressChars');
+    const percentage = Math.min((totalChars / MAX_CHARS) * 100, 100);
+    progress.style.width = percentage + '%';
+    progress.className = 'progress-fill ' + (percentage < 70 ? 'safe' : percentage < 90 ? 'warning' : 'danger');
+}
+
+function getAllWords() {
+    const allLyrics = state.sections.map(s => s.lyrics || '').join(' ');
+    return allLyrics.replace(/\([^)]*\)/g, '').split(/\s+/).filter(w => w.length > 2 && /^[a-záéíóúüñ]+$/i.test(w));
+}
+
+// ============================================================
+//  ANALYSIS
+// ============================================================
+function refreshAnalysis() {
+    renderWordCloud();
+    renderRepeatedWords();
+    renderDensityAnalysis();
+    renderStickinessScore();
+    renderBPMSuggestion();
+}
+
+function renderWordCloud() {
+    const container = document.getElementById('wordCloud');
+    const words = getAllWords();
+    
+    if (words.length === 0) {
+        container.innerHTML = '<span style="color:var(--text-dim);font-style:italic;font-size:0.8rem;">Escribe letra para ver el mapa de palabras</span>';
+        return;
+    }
+
+    // Count frequency
+    const freq = {};
+    words.forEach(w => {
+        const lower = w.toLowerCase();
+        freq[lower] = (freq[lower] || 0) + 1;
+    });
+
+    // Sort and take top 30
+    const sorted = Object.entries(freq).sort((a, b) => b[1] - a[1]).slice(0, 30);
+    const maxFreq = sorted[0]?.[1] || 1;
+
+    container.innerHTML = sorted.map(([word, count]) => {
+        const size = 0.65 + (count / maxFreq) * 0.8;
+        const opacity = 0.5 + (count / maxFreq) * 0.5;
+        return `<span class="cloud-word" style="font-size:${size}rem;opacity:${opacity}" 
+                      onclick="showSynonyms('${word}')" title="${count} veces — click para sinónimos">${word}</span>`;
+    }).join('');
+}
+
+function renderRepeatedWords() {
+    const container = document.getElementById('repeatedWordsList');
+    const badge = document.getElementById('repeatCount');
+    const words = getAllWords();
+
+    const freq = {};
+    words.forEach(w => {
+        const lower = w.toLowerCase();
+        freq[lower] = (freq[lower] || 0) + 1;
+    });
+
+    const repeated = Object.entries(freq).filter(([_, count]) => count > 3).sort((a, b) => b[1] - a[1]);
+
+    badge.textContent = repeated.length + ' alertas';
+
+    if (repeated.length === 0) {
+        container.innerHTML = '<div class="empty-state">Sin repeticiones excesivas ✓</div>';
+        return;
+    }
+
+    container.innerHTML = repeated.map(([word, count]) => `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:0.3rem 0.5rem;border-bottom:1px solid var(--border);font-size:0.75rem;">
+            <span style="color:var(--danger);font-weight:600;">${word}</span>
+            <span style="color:var(--text-muted);">${count} veces</span>
+            <button class="btn btn-ghost btn-xs" onclick="showSynonyms('${word}')">Sinónimos</button>
+        </div>
+    `).join('');
+}
+
+function getRepeatedWords() {
+    const words = getAllWords();
+    const freq = {};
+    words.forEach(w => { freq[w.toLowerCase()] = (freq[w.toLowerCase()] || 0) + 1; });
+    return new Set(Object.entries(freq).filter(([_, c]) => c > 3).map(([w]) => w));
+}
+
+function renderDensityAnalysis() {
+    const container = document.getElementById('densityAnalysis');
+
+    if (state.sections.length === 0) {
+        container.innerHTML = '<div class="empty-state">Añade secciones con letra</div>';
+        return;
+    }
+
+    let html = '';
+    let verseCount = 0, chorusCount = 0;
+
+    state.sections.forEach((section, index) => {
+        let displayTag = section.tag;
+        if (section.tag === 'Verse') { verseCount++; displayTag = `Verse ${verseCount}`; }
+        else if (section.tag === 'Chorus') { chorusCount++; if (chorusCount > 1) displayTag = `Chorus ${chorusCount}`; }
+
+        const lyrics = section.lyrics || '';
+        const lines = lyrics.split('\n').filter(l => l.trim());
+        const words = lyrics.replace(/\([^)]*\)/g, '').split(/\s+/).filter(w => w.length > 0);
+        const density = lines.length > 0 ? (words.length / lines.length).toFixed(1) : 0;
+        const maxDensity = 15;
+        const percentage = Math.min((density / maxDensity) * 100, 100);
+        const mood = MOODS.find(m => m.name === section.mood) || MOODS[0];
+
+        html += `
+            <div class="density-bar-container">
+                <span style="font-size:0.68rem;color:${mood.color};min-width:80px;font-weight:600;">${displayTag}</span>
+                <div class="density-bar">
+                    <div class="density-fill" style="width:${percentage}%;background:${mood.color}"></div>
+                </div>
+                <span class="density-label">${density} p/l</span>
+            </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+function renderStickinessScore() {
+    const scoreEl = document.getElementById('stickinessScore');
+    const labelEl = document.getElementById('stickinessLabel');
+    const descEl = document.getElementById('stickinessDesc');
+
+    // Find chorus sections
+    const choruses = state.sections.filter(s => s.tag === 'Chorus');
+    
+    if (choruses.length === 0) {
+        scoreEl.textContent = '0';
+        scoreEl.style.color = 'var(--text-muted)';
+        labelEl.textContent = 'Sin estribillo';
+        descEl.textContent = 'Añade un [Chorus] para evaluar';
+        return;
+    }
+
+    // Calculate stickiness based on:
+    // 1. Repetition of chorus (multiple choruses = good)
+    // 2. Word repetition within chorus (some repetition = catchy)
+    // 3. Rhyme density
+    // 4. Length (shorter = more memorable)
+    
+    const chorusLyrics = choruses.map(c => c.lyrics || '').join(' ');
+    const words = chorusLyrics.replace(/\([^)]*\)/g, '').split(/\s+/).filter(w => w.length > 2);
+    const lines = chorusLyrics.split('\n').filter(l => l.trim());
+    
+    if (words.length === 0) {
+        scoreEl.textContent = '0';
+        labelEl.textContent = 'Estribillo vacío';
+        descEl.textContent = 'Escribe la letra del estribillo';
+        return;
+    }
+
+    // Word repetition score (0-30)
+    const freq = {};
+    words.forEach(w => { freq[w.toLowerCase()] = (freq[w.toLowerCase()] || 0) + 1; });
+    const repeatedWords = Object.values(freq).filter(c => c > 1).length;
+    const repScore = Math.min(repeatedWords * 10, 30);
+
+    // Rhyme score (0-30)
+    const lineEndings = lines.map(l => {
+        const w = l.trim().split(/\s+/).pop() || '';
+        return w.toLowerCase().slice(-2);
+    });
+    const rhymePairs = {};
+    lineEndings.forEach(e => { if (e) rhymePairs[e] = (rhymePairs[e] || 0) + 1; });
+    const rhymes = Object.values(rhymePairs).filter(c => c > 1).length;
+    const rhymeScore = Math.min(rhymes * 10, 30);
+
+    // Length score (0-20) - shorter is catchier
+    const avgLineLength = words.length / Math.max(lines.length, 1);
+    const lengthScore = avgLineLength < 8 ? 20 : avgLineLength < 12 ? 15 : 10;
+
+    // Multi-chorus bonus (0-20)
+    const multiChorusBonus = Math.min((choruses.length - 1) * 10, 20);
+
+    const totalScore = repScore + rhymeScore + lengthScore + multiChorusBonus;
+
+    scoreEl.textContent = totalScore;
+    scoreEl.style.color = totalScore >= 70 ? 'var(--success)' : totalScore >= 40 ? 'var(--warning)' : 'var(--danger)';
+    
+    if (totalScore >= 70) { labelEl.textContent = '¡Muy pegadizo!'; descEl.textContent = 'Tu estribillo tiene gran potencial'; }
+    else if (totalScore >= 40) { labelEl.textContent = 'Moderado'; descEl.textContent = 'Considera más repetición o rima'; }
+    else { labelEl.textContent = 'Bajo'; descEl.textContent = 'Añade más repetición y rimas'; }
+}
+
+function renderBPMSuggestion() {
+    const bpmEl = document.getElementById('suggestedBPM');
+    const genreEl = document.getElementById('suggestedGenre');
+    const moodEl = document.getElementById('suggestedMood');
+
+    if (state.sections.length === 0) {
+        bpmEl.textContent = '--';
+        genreEl.textContent = '--';
+        moodEl.textContent = '--';
+        return;
+    }
+
+    // Analyze moods
+    const moodCounts = {};
+    state.sections.forEach(s => {
+        const m = s.mood || 'Alegre';
+        moodCounts[m] = (moodCounts[m] || 0) + 1;
+    });
+    const dominantMood = Object.entries(moodCounts).sort((a, b) => b[1] - a[1])[0]?.[0] || 'Alegre';
+
+    // BPM mapping
+    const bpmMap = {
+        'Alegre': 120, 'Triste': 75, 'Energético': 140, 'Romántico': 90,
+        'Oscuro': 95, 'Melancólico': 80, 'Épico': 110, 'Relajado': 85,
+        'Misterioso': 100, 'Nostálgico': 95, 'Agresivo': 150, 'Esperanzador': 110
+    };
+
+    // Genre mapping
+    const genreMap = {
+        'Alegre': 'Pop / Dance', 'Triste': 'Balada', 'Energético': 'EDM / Rock',
+        'Romántico': 'R&B / Pop', 'Oscuro': 'Alternative / Dark Pop',
+        'Melancólico': 'Indie / Balada', 'Épico': 'Cinematic / Rock',
+        'Relajado': 'Lo-Fi / Chill', 'Misterioso': 'Ambient / Trip-Hop',
+        'Nostálgico': 'Indie Pop / Folk', 'Agresivo': 'Rock / Metal / Rap',
+        'Esperanzador': 'Pop / Indie'
+    };
+
+    const suggestedBPM = bpmMap[dominantMood] || 120;
+    const suggestedGenre = genreMap[dominantMood] || 'Pop';
+
+    bpmEl.textContent = suggestedBPM;
+    genreEl.textContent = suggestedGenre;
+    moodEl.textContent = dominantMood;
+}
+
+// ============================================================
+//  SYNONYMS
+// ============================================================
+function showSynonyms(word) {
+    const popup = document.getElementById('synonymPopup');
+    const synonyms = SYNONYMS[word.toLowerCase()];
+
+    if (!synonyms) {
+        showToast(`No hay sinónimos para "${word}"`, 'info');
+        return;
+    }
+
+    popup.innerHTML = `
+        <div style="font-size:0.7rem;color:var(--text-muted);margin-bottom:0.3rem;">Sinónimos de "${word}":</div>
+        ${synonyms.map(s => `<span class="syn-word" onclick="useSynonym('${s}')">${s}</span>`).join('')}
+    `;
+
+    // Position near click
+    popup.style.left = '50%';
+    popup.style.top = '50%';
+    popup.style.transform = 'translate(-50%, -50%)';
+    popup.classList.add('show');
+
+    setTimeout(() => {
+        document.addEventListener('click', closeSynonymPopup, { once: true });
+    }, 100);
+}
+
+function closeSynonymPopup(e) {
+    const popup = document.getElementById('synonymPopup');
+    if (!popup.contains(e.target)) {
+        popup.classList.remove('show');
+    }
+}
+
+function useSynonym(word) {
+    const textarea = document.getElementById('lyricsTextarea');
+    if (textarea.disabled) { showToast('Selecciona una sección', 'warning'); return; }
+
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+
+    // If there's a selection, replace it
+    if (start !== end) {
+        textarea.value = text.substring(0, start) + word + text.substring(end);
+    } else {
+        // Insert at cursor
+        textarea.value = text.substring(0, start) + word + text.substring(start);
+    }
+
+    textarea.selectionStart = textarea.selectionEnd = start + word.length;
+    textarea.focus();
+    onLyricsChange();
+    document.getElementById('synonymPopup').classList.remove('show');
+    showToast(`"${word}" insertado`, 'success');
+}
+
+// ============================================================
+//  TITLE GENERATOR
+// ============================================================
+function generateTitles() {
+    const container = document.getElementById('titleSuggestions');
+    const words = getAllWords();
+    
+    if (words.length < 5) {
+        container.innerHTML = '<span style="font-size:0.75rem;color:var(--text-dim);font-style:italic;">Escribe más letra para generar títulos</span>';
+        return;
+    }
+
+    // Get unique significant words
+    const freq = {};
+    words.forEach(w => { freq[w.toLowerCase()] = (freq[w.toLowerCase()] || 0) + 1; });
+    const significant = Object.entries(freq).filter(([_, c]) => c >= 1).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([w]) => w);
+
+    // Generate title patterns
+    const patterns = [
+        (w) => `${w.charAt(0).toUpperCase() + w.slice(1)}`,
+        (w) => `El ${w}`,
+        (w) => `La ${w}`,
+        (w) => `${w} y ${significant[Math.floor(Math.random() * significant.length)]}`,
+        (w) => `Sin ${w}`,
+        (w) => `Después del ${w}`,
+        (w) => `Antes del ${w}`,
+        (w) => `${w.charAt(0).toUpperCase() + w.slice(1)} ${significant[Math.floor(Math.random() * significant.length)]}`,
+        (w) => `Cuando ${w} ${significant[Math.floor(Math.random() * significant.length)]}`,
+        (w) => `No hay ${w}`,
+        (w) => `${w.charAt(0).toUpperCase() + w.slice(1)} (ft. silencio)`,
+        (w) => `${w} en llamas`,
+        (w) => `${w} de cristal`,
+        (w) => `Último ${w}`,
+        (w) => `Primer ${w}`
+    ];
+
+    const titles = new Set();
+    significant.slice(0, 5).forEach(word => {
+        const pattern = patterns[Math.floor(Math.random() * patterns.length)];
+        titles.add(pattern(word));
+    });
+
+    container.innerHTML = Array.from(titles).slice(0, 8).map(title =>
+        `<span class="title-suggestion" onclick="useTitle('${title}')">${title}</span>`
+    ).join('');
+}
+
+function useTitle(title) {
+    state.projectName = title;
+    showToast(`Título: "${title}"`, 'success');
+}
+
+// ============================================================
+//  BRAINSTORM
+// ============================================================
+function renderBrainstorm() {
+    const area = document.getElementById('brainstormArea');
+    const count = document.getElementById('ideaCount');
+
+    if (!state.ideas) state.ideas = [];
+
+    if (state.ideas.length === 0) {
+        area.innerHTML = '<div class="empty-state" style="width:100%;">Añade ideas aquí. Arrástralas al editor.</div>';
+        count.textContent = '0 ideas';
+        return;
+    }
+
+    area.innerHTML = state.ideas.map((idea, index) => `
+        <div class="idea-card" draggable="true" ondragstart="onIdeaDragStart(event,${index})">
+            <span>💡</span>
+            <span>${escapeHtml(idea)}</span>
+            <span class="remove-idea" onclick="removeIdea(${index})">✕</span>
+        </div>
+    `).join('');
+
+    count.textContent = state.ideas.length + ' ideas';
+}
+
+function addIdea() {
+    const input = document.getElementById('ideaInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    if (!state.ideas) state.ideas = [];
+    state.ideas.push(text);
+    input.value = '';
+    renderBrainstorm();
+    saveState();
+    showToast('Idea añadida', 'success');
+}
+
+function removeIdea(index) {
+    state.ideas.splice(index, 1);
+    renderBrainstorm();
+    saveState();
+}
+
+function onIdeaDragStart(e, index) {
+    e.dataTransfer.setData('text/plain', state.ideas[index]);
+    e.dataTransfer.effectAllowed = 'copy';
+}
+
+function setupDragDrop() {
+    const textarea = document.getElementById('lyricsTextarea');
+    
+    textarea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy';
+    });
+
+    textarea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        const text = e.dataTransfer.getData('text/plain');
+        if (!text) return;
+
+        const pos = textarea.selectionStart;
+        const value = textarea.value;
+        textarea.value = value.substring(0, pos) + text + value.substring(pos);
+        textarea.selectionStart = textarea.selectionEnd = pos + text.length;
+        textarea.focus();
+        onLyricsChange();
+        showToast('Idea insertada', 'success');
+    });
+}
+
+function generateInspiration() {
+    const output = document.getElementById('inspirationOutput');
+    const phrase = INSPIRATION_PHRASES[Math.floor(Math.random() * INSPIRATION_PHRASES.length)];
+    output.textContent = `"${phrase}"`;
+    output.style.animation = 'none';
+    output.offsetHeight; // Trigger reflow
+    output.style.animation = 'fadeIn 0.5s';
+}
+
+// ============================================================
+//  HISTORY
+// ============================================================
+function renderHistory() {
+    const container = document.getElementById('historyList');
+    if (!state.history) state.history = [];
+
+    if (state.history.length === 0) {
+        container.innerHTML = '<div class="empty-state">Sin versiones guardadas</div>';
+        return;
+    }
+
+    container.innerHTML = state.history.slice().reverse().map((item, i) => {
+        const realIndex = state.history.length - 1 - i;
+        return `
+            <div class="history-item" onclick="restoreVersion(${realIndex})">
+                <span>${item.name || 'Versión ' + (realIndex + 1)}</span>
+                <span style="color:var(--text-muted);font-size:0.65rem;">${new Date(item.date).toLocaleString()}</span>
+            </div>`;
+    }).join('');
+}
+
+function saveToHistory() {
+    if (!state.history) state.history = [];
+    const name = prompt('Nombre de la versión:', `Versión ${state.history.length + 1}`);
+    if (!name) return;
+
+    state.history.push({
+        name,
+        date: new Date().toISOString(),
+        sections: JSON.parse(JSON.stringify(state.sections))
+    });
+
+    renderHistory();
+    saveState();
+    showToast(`"${name}" guardada`, 'success');
+}
+
+function restoreVersion(index) {
+    if (!confirm('¿Restaurar esta versión? Se reemplazará el contenido actual.')) return;
+    pushUndo();
+    state.sections = JSON.parse(JSON.stringify(state.history[index].sections));
+    state.activeSectionIndex = 0;
+    renderAll();
+    showToast('Versión restaurada', 'success');
+}
+
+// ============================================================
+//  TEMPLATES
+// ============================================================
+function renderTemplates() {
+    const grid = document.getElementById('templatesGrid');
+    grid.innerHTML = TEMPLATES.map((t, i) => `
+        <div class="template-card" onclick="loadTemplate(${i})">
+            <div class="template-name">${t.name}</div>
+            <div class="template-desc">${t.desc}</div>
+            <div class="template-tags">${t.tags.map(tag => `<span>${tag}</span>`).join('')}</div>
+        </div>
+    `).join('');
+}
+
+function loadTemplate(index) {
+    const template = TEMPLATES[index];
+    if (state.sections.length > 0) {
+        if (!confirm(`¿Cargar "${template.name}"? Se reemplazará el contenido actual.`)) return;
+    }
+
+    pushUndo();
+    state.sections = template.sections.map(s => {
+        const sec = createSection(s.tag, s.meta, s.lyrics);
+        sec.mood = s.mood || 'Alegre';
+        return sec;
+    });
+    state.activeSectionIndex = 0;
+    state.projectName = template.name.replace(/[^\w\s]/g, '').trim();
+
+    renderAll();
+    showToast(`Plantilla "${template.name}" cargada`, 'success');
+    switchTab('editor');
+}
+
+// ============================================================
+//  PROJECTS
+// ============================================================
+function saveProject() {
+    const name = prompt('Nombre del proyecto:', state.projectName || 'Mi canción');
+    if (!name) return;
+
+    state.projectName = name;
+    let projects = getProjects();
+    const existingIndex = projects.findIndex(p => p.name === name);
+
+    const projectData = {
+        name,
+        date: new Date().toISOString(),
+        sections: JSON.parse(JSON.stringify(state.sections)),
+        charCount: generatePlainText().length
+    };
+
+    if (existingIndex >= 0) projects[existingIndex] = projectData;
+    else projects.push(projectData);
+
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    renderProjects();
+    saveState();
+    showToast(`Proyecto "${name}" guardado`, 'success');
+}
+
+function getProjects() {
+    try { return JSON.parse(localStorage.getItem(PROJECTS_KEY) || '[]'); }
+    catch { return []; }
+}
+
+function renderProjects() {
+    const list = document.getElementById('projectsList');
+    const projects = getProjects();
+
+    if (projects.length === 0) {
+        list.innerHTML = '<div class="empty-state">No hay proyectos guardados.</div>';
+        return;
+    }
+
+    list.innerHTML = projects.map((p, i) => `
+        <div class="project-item">
+            <div class="project-info">
+                <div class="project-name">${escapeHtml(p.name)}</div>
+                <div class="project-meta">${p.sections.length} secciones · ${p.charCount} chars · ${new Date(p.date).toLocaleDateString()}</div>
+            </div>
+            <div class="project-actions">
+                <button class="btn btn-primary btn-sm" onclick="loadProject(${i})">📂 Cargar</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteProject(${i})">🗑️</button>
+            </div>
+        </div>
+    `).join('');
+}
+
+function loadProject(index) {
+    const projects = getProjects();
+    const project = projects[index];
+    if (!project) return;
+
+    if (state.sections.length > 0) {
+        if (!confirm(`¿Cargar "${project.name}"? Se reemplazará el contenido actual.`)) return;
+    }
+
+    pushUndo();
+    state.sections = project.sections;
+    state.activeSectionIndex = 0;
+    state.projectName = project.name;
+
+    renderAll();
+    showToast(`Proyecto "${project.name}" cargado`, 'success');
+    switchTab('editor');
+}
+
+function deleteProject(index) {
+    const projects = getProjects();
+    const name = projects[index].name;
+    if (!confirm(`¿Eliminar "${name}"?`)) return;
+
+    projects.splice(index, 1);
+    localStorage.setItem(PROJECTS_KEY, JSON.stringify(projects));
+    renderProjects();
+    showToast(`"${name}" eliminado`, 'info');
+}
+
+// ============================================================
+//  EXPORT / IMPORT
+// ============================================================
+function exportTXT() {
+    const content = generatePlainText();
+    if (!content.trim()) { showToast('No hay contenido', 'warning'); return; }
+
+    const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${state.projectName || 'suno_song'}.txt`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+    showToast('TXT exportado', 'success');
+}
+
+function exportJSON() {
+    const data = {
+        version: '3.0',
+        projectName: state.projectName,
+        exportDate: new Date().toISOString(),
+        sections: state.sections,
+        ideas: state.ideas || [],
+        output: generatePlainText()
+    };
+
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = `${state.projectName || 'suno_project'}.json`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(link.href);
+    showToast('JSON exportado', 'success');
+}
+
+function importJSON() {
+    document.getElementById('fileInput').click();
+}
+
+function handleFileImport(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        const content = e.target.result;
+
+        if (file.name.endsWith('.json')) {
+            try {
+                const data = JSON.parse(content);
+                if (data.sections && Array.isArray(data.sections)) {
+                    if (state.sections.length > 0) {
+                        if (!confirm('¿Importar? Se reemplazará el contenido actual.')) return;
+                    }
+                    pushUndo();
+                    state.sections = data.sections;
+                    state.ideas = data.ideas || [];
+                    state.activeSectionIndex = 0;
+                    state.projectName = data.projectName || file.name.replace('.json', '');
+                    renderAll();
+                    renderBrainstorm();
+                    showToast('Proyecto importado', 'success');
+                } else {
+                    showToast('JSON no válido', 'error');
+                }
+            } catch (err) { showToast('Error: ' + err.message, 'error'); }
+        } else if (file.name.endsWith('.txt')) {
+            parseAndImportText(content);
+        }
+    };
+    reader.readAsText(file);
+    event.target.value = '';
+}
+
+function showImportModal() {
+    const modal = document.getElementById('modalContainer');
+    modal.innerHTML = `
+        <div class="modal-overlay" onclick="closeModal(event)">
+            <div class="modal" onclick="event.stopPropagation()">
+                <h3>📥 Importar Texto Suno</h3>
+                <p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:0.8rem;font-family:var(--font-body);font-style:italic;">
+                    Pega texto con etiquetas [Section] para analizarlo.
+                </p>
+                <textarea id="importTextarea" style="width:100%;min-height:200px;background:var(--bg-deep);border:1px solid var(--border);border-radius:var(--radius-md);padding:0.8rem;color:var(--text-primary);font-family:var(--font-mono);font-size:0.78rem;line-height:1.7;resize:vertical;outline:none;" placeholder="[Verse 1]\nEscribe aquí...\n\n[Chorus]\nEl estribillo..."></textarea>
+                <div class="modal-actions">
+                    <button class="btn btn-outline" onclick="closeModal()">Cancelar</button>
+                    <button class="btn btn-primary" onclick="parseImportText()">🔍 Analizar</button>
+                </div>
+            </div>
+        </div>`;
+}
+
+function closeModal(event) {
+    if (event && event.target !== event.currentTarget) return;
+    document.getElementById('modalContainer').innerHTML = '';
+}
+
+function parseImportText() {
+    const text = document.getElementById('importTextarea').value;
+    if (!text.trim()) { showToast('Pega texto para importar', 'warning'); return; }
+    parseAndImportText(text);
+    closeModal();
+}
+
+function parseAndImportText(text) {
+    const lines = text.split('\n');
+    const newSections = [];
+    let currentSection = null;
+    let currentLyrics = [];
+    const tagRegex = /^\[(.+?)\]$/;
+
+    lines.forEach(line => {
+        const match = line.trim().match(tagRegex);
+        if (match) {
+            if (currentSection) {
+                currentSection.lyrics = currentLyrics.join('\n').trim();
+                newSections.push(currentSection);
+            }
+            let tagPart = match[1];
+            let meta = '';
+            const metaMatch = tagPart.match(/^(.+?)\s*\((.+?)\)\s*$/);
+            if (metaMatch) { tagPart = metaMatch[1].trim(); meta = metaMatch[2].trim(); }
+            let baseTag = tagPart.replace(/\s*\d+\s*$/, '').trim();
+            const validTags = ['Intro','Verse','Pre-Chorus','Chorus','Post-Chorus','Bridge','Hook','Instrumental','Break','Interlude','Solo','Guitar Solo','Piano Solo','Drop','Build','Outro','End','Fade Out'];
+            if (!validTags.includes(baseTag)) {
+                const found = validTags.find(t => baseTag.toLowerCase().includes(t.toLowerCase()));
+                if (found) baseTag = found;
+            }
+            currentSection = createSection(baseTag, meta);
+            currentLyrics = [];
+        } else if (currentSection) {
+            currentLyrics.push(line);
+        }
+    });
+
+    if (currentSection) {
+        currentSection.lyrics = currentLyrics.join('\n').trim();
+        newSections.push(currentSection);
+    }
+
+    if (newSections.length === 0) { showToast('No se encontraron etiquetas [Section]', 'error'); return; }
+
+    if (state.sections.length > 0) {
+        if (!confirm(`Se encontraron ${newSections.length} secciones. ¿Reemplazar?`)) return;
+    }
+
+    pushUndo();
+    state.sections = newSections;
+    state.activeSectionIndex = 0;
+    renderAll();
+    showToast(`${newSections.length} secciones importadas`, 'success');
+    switchTab('editor');
+}
+
+// ============================================================
+//  COPY
+// ============================================================
+async function copyToClipboard() {
+    const content = generatePlainText();
+    if (!content.trim()) { showToast('No hay contenido', 'warning'); return; }
+
+    try {
+        await navigator.clipboard.writeText(content);
+        showToast('¡Copiado!', 'success');
+    } catch {
+        const textarea = document.createElement('textarea');
+        textarea.value = content;
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+        showToast('¡Copiado!', 'success');
+    }
+}
+
+// ============================================================
+//  TOAST
+// ============================================================
+function showToast(message, type = 'info') {
+    const container = document.getElementById('toastContainer');
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+    toast.innerHTML = `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span>`;
+    container.appendChild(toast);
+    setTimeout(() => {
+        toast.style.animation = 'slideOut 0.3s ease forwards';
+        setTimeout(() => toast.remove(), 300);
+    }, 2500);
+}
+
+// ============================================================
+//  KEYBOARD SHORTCUTS
+// ============================================================
+function setupKeyboardShortcuts() {
+    document.addEventListener('keydown', (e) => {
+        if (e.ctrlKey && e.key === 's') { e.preventDefault(); saveProject(); }
+        if (e.ctrlKey && e.key === 'Enter') { e.preventDefault(); addSection(); }
+        if (e.ctrlKey && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undoAction(); }
+        if (e.ctrlKey && e.key === 'y') { e.preventDefault(); redoAction(); }
+        if (e.ctrlKey && e.key === 'd' && !e.shiftKey && document.activeElement.tagName !== 'TEXTAREA') { e.preventDefault(); duplicateSection(); }
+        if (e.key === 'Escape') closeModal();
+    });
+}
+</script>
+</body>
+</html>
